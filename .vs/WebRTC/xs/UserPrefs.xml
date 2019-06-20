@@ -1,0 +1,40 @@
+﻿<Properties StartupConfiguration="{C4733747-A5E6-4929-B646-62FB15E38E57}|Default">
+  <MonoDevelop.Ide.Workbench>
+    <Files>
+      <File FileName="src/WebRTCBinding/ApiDefinition.cs" Line="1852" Column="27" />
+      <File FileName="src/WebRTCBinding/original_api_definition.txt" Line="2119" Column="26" />
+      <File FileName="src/AppRTC.iOS/Main.cs" Line="12" Column="1" />
+      <File FileName="src/AppRTC.iOS/Main.cs" Line="12" Column="1" />
+      <File FileName="src/AppRTC/ARDAppClient.cs" Line="514" Column="17" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="WebRTC" expanded="True">
+            <Node name="AppRTC" expanded="True">
+              <Node name="Extensions" expanded="True" />
+              <Node name="ARDAppClient.cs" selected="True" />
+            </Node>
+            <Node name="AppRTC.iOS" expanded="True">
+              <Node name="Extenstions" expanded="True" />
+            </Node>
+            <Node name="WebRTCBinding" expanded="True">
+              <Node name="NativeReferenceFolder" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.ItemProperties.AppRTC.iOS automaticSigning="True" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.2378EACF-4C5D-420F-B6CA-D77E3AAB8D95">
+    <MonoDevelop.MacDev.AppleDevelopmentTeam DeveloperId="RF33GCN7HR" TeamId="VG34VQP9G2" />
+  </MonoDevelop.Ide.ItemProperties.AppRTC.iOS>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/valentingrigorean/work/apprtc-ios-xamarin/src/WebRTCBinding/RTCTracking.cs" relfile="src/WebRTCBinding/RTCTracking.cs" line="54" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

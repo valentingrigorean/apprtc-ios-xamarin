@@ -1,0 +1,1 @@
+sharpie bind -sdk iphoneos12.2 WebRTC.framework/Headers/WebRTC.h -scope WebRTC.framework/Headers WebRTC.framework/Headers/*.h -c -F .
