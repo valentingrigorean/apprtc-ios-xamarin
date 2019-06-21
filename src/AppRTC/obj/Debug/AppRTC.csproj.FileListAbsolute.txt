@@ -1,0 +1,13 @@
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/obj/Debug/optimized/
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/obj/Debug/AppRTC.csprojAssemblyReference.cache
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/obj/Debug/AppRTC.csproj.CoreCompileInputs.cache
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/bin/Debug/AppRTC.dll
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/bin/Debug/AppRTC.pdb
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/bin/Debug/NativeLibrary.dll
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/bin/Debug/Newtonsoft.Json.dll
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/bin/Debug/Square.SocketRocket.dll
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/bin/Debug/NativeLibrary.pdb
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/bin/Debug/Newtonsoft.Json.xml
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/obj/Debug/AppRTC.csproj.CopyComplete
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/obj/Debug/AppRTC.dll
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/obj/Debug/AppRTC.pdb

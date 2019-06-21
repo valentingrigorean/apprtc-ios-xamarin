@@ -1,6 +1,7 @@
 using System;
 using AVFoundation;
 using CoreGraphics;
+using CoreVideo;
 using Foundation;
 using ObjCRuntime;
 using UIKit;
@@ -173,6 +174,61 @@ namespace WebRTCBinding
         //@property(nonatomic, readonly) int height;
         [Export("height")]
         int Height { get; }
+    }
+
+
+    // @interface RTCCVPixelBuffer : NSObject <RTCVideoFrameBuffer>
+    [BaseType(typeof(NSObject))]
+    interface RTCCVPixelBuffer : IRTCVideoFrameBuffer
+    {
+        // @property (readonly, nonatomic) CVPixelBufferRef _Nonnull pixelBuffer;
+        [Export("pixelBuffer")]
+        CVPixelBuffer PixelBuffer { get; }
+
+        // @property (readonly, nonatomic) int cropX;
+        [Export("cropX")]
+        int CropX { get; }
+
+        // @property (readonly, nonatomic) int cropY;
+        [Export("cropY")]
+        int CropY { get; }
+
+        // @property (readonly, nonatomic) int cropWidth;
+        [Export("cropWidth")]
+        int CropWidth { get; }
+
+        // @property (readonly, nonatomic) int cropHeight;
+        [Export("cropHeight")]
+        int CropHeight { get; }
+
+        // +(NSSet<NSNumber *> * _Nonnull)supportedPixelFormats;
+        [Static]
+        [Export("supportedPixelFormats")]
+        NSSet<NSNumber> SupportedPixelFormats { get; }
+
+        // -(instancetype _Nonnull)initWithPixelBuffer:(CVPixelBufferRef _Nonnull)pixelBuffer;
+        [Export("initWithPixelBuffer:")]
+        IntPtr Constructor(CVPixelBuffer pixelBuffer);
+
+        // -(instancetype _Nonnull)initWithPixelBuffer:(CVPixelBufferRef _Nonnull)pixelBuffer adaptedWidth:(int)adaptedWidth adaptedHeight:(int)adaptedHeight cropWidth:(int)cropWidth cropHeight:(int)cropHeight cropX:(int)cropX cropY:(int)cropY;
+        [Export("initWithPixelBuffer:adaptedWidth:adaptedHeight:cropWidth:cropHeight:cropX:cropY:")]
+        IntPtr Constructor(CVPixelBuffer pixelBuffer, int adaptedWidth, int adaptedHeight, int cropWidth, int cropHeight, int cropX, int cropY);
+
+        // -(BOOL)requiresCropping;
+        [Export("requiresCropping")]
+        bool RequiresCropping { get; }
+
+        // -(BOOL)requiresScalingToWidth:(int)width height:(int)height;
+        [Export("requiresScalingToWidth:height:")]
+        bool RequiresScalingToWidth(int width, int height);
+
+        // -(int)bufferSizeForCroppingAndScalingToWidth:(int)width height:(int)height;
+        [Export("bufferSizeForCroppingAndScalingToWidth:height:")]
+        int BufferSizeForCroppingAndScalingToWidth(int width, int height);
+
+        // -(BOOL)cropAndScaleTo:(CVPixelBufferRef _Nonnull)outputPixelBuffer withTempBuffer:(uint8_t * _Nullable)tmpBuffer;
+        [Export("cropAndScaleTo:withTempBuffer:")]
+         bool CropAndScaleTo(CVPixelBuffer outputPixelBuffer, [NullAllowed] byte[] tmpBuffer);
     }
 
 
@@ -731,7 +787,7 @@ namespace WebRTCBinding
     interface RTCCameraPreviewView
     {
         // @property (nonatomic, strong) AVCaptureSession * captureSession;
-        [Export("captureSession", ArgumentSemantic.Strong)]
+        [Export("captureSession", ArgumentSemantic.Strong),NullAllowed]
         AVCaptureSession CaptureSession { get; set; }
     }
 
@@ -1373,11 +1429,11 @@ namespace WebRTCBinding
 
         // @optional -(void)peerConnection:(RTCPeerConnection * _Nonnull)peerConnection didAddReceiver:(RTCRtpReceiver * _Nonnull)rtpReceiver streams:(NSArray<RTCMediaStream *> * _Nonnull)mediaStreams;
         [Export("peerConnection:didAddReceiver:streams:")]
-        void DidAddReceiver(RTCPeerConnection peerConnection, RTCRtpReceiver rtpReceiver, RTCMediaStream[] mediaStreams);
+        void DidAddReceiver(RTCPeerConnection peerConnection, IRTCRtpReceiver rtpReceiver, RTCMediaStream[] mediaStreams);
 
         // @optional -(void)peerConnection:(RTCPeerConnection * _Nonnull)peerConnection didRemoveReceiver:(RTCRtpReceiver * _Nonnull)rtpReceiver;
         [Export("peerConnection:didRemoveReceiver:")]
-        void DidRemoveReceiver(RTCPeerConnection peerConnection, RTCRtpReceiver rtpReceiver);
+        void DidRemoveReceiver(RTCPeerConnection peerConnection, IRTCRtpReceiver rtpReceiver);
     }
 
     // @interface RTCPeerConnection : NSObject
@@ -1427,11 +1483,11 @@ namespace WebRTCBinding
 
         // @property (readonly, nonatomic) NSArray<RTCRtpSender *> * _Nonnull senders;
         [Export("senders")]
-        RTCRtpSender[] Senders { get; }
+        IRTCRtpSender[] Senders { get; }
 
         // @property (readonly, nonatomic) NSArray<RTCRtpReceiver *> * _Nonnull receivers;
         [Export("receivers")]
-        RTCRtpReceiver[] Receivers { get; }
+        IRTCRtpReceiver[] Receivers { get; }
 
         // @property (readonly, nonatomic) NSArray<RTCRtpTransceiver *> * _Nonnull transceivers;
         [Export("transceivers")]
@@ -1463,11 +1519,11 @@ namespace WebRTCBinding
 
         // -(RTCRtpSender * _Nonnull)addTrack:(RTCMediaStreamTrack * _Nonnull)track streamIds:(NSArray<NSString *> * _Nonnull)streamIds;
         [Export("addTrack:streamIds:")]
-        RTCRtpSender AddTrack(RTCMediaStreamTrack track, string[] streamIds);
+        IRTCRtpSender AddTrack(RTCMediaStreamTrack track, string[] streamIds);
 
         // -(BOOL)removeTrack:(RTCRtpSender * _Nonnull)sender;
         [Export("removeTrack:")]
-        bool RemoveTrack(RTCRtpSender sender);
+        bool RemoveTrack(IRTCRtpSender sender);
 
         // -(RTCRtpTransceiver * _Nonnull)addTransceiverWithTrack:(RTCMediaStreamTrack * _Nonnull)track;
         [Export("addTransceiverWithTrack:")]
@@ -1513,7 +1569,7 @@ namespace WebRTCBinding
         [Export("stopRtcEventLog")]
         void StopRtcEventLog();
 
-       
+
         // -(RTCDataChannel * _Nullable)dataChannelForLabel:(NSString * _Nonnull)label configuration:(RTCDataChannelConfiguration * _Nonnull)configuration;
         [Export("dataChannelForLabel:configuration:")]
         [return: NullAllowed]
@@ -1780,6 +1836,9 @@ namespace WebRTCBinding
         void DidReceiveFirstPacketForMediaType(RTCRtpReceiver rtpReceiver, RTCRtpMediaType mediaType);
     }
 
+
+    public interface IRTCRtpReceiver { }
+
     // @protocol RTCRtpReceiver <NSObject>
     [Protocol, Model]
     [BaseType(typeof(NSObject))]
@@ -1846,9 +1905,9 @@ namespace WebRTCBinding
     public interface IRTCRtpSender { }
 
     // @protocol RTCRtpSender <NSObject>
-    [Protocol]
-    [BaseType(typeof(NSObject),Name = "RTCRtpSender")]
-    interface RTCRtpSenderProtocol
+    [Protocol, Model]
+    [BaseType(typeof(NSObject))]
+    interface RTCRtpSender
     {
         // @required @property (readonly, nonatomic) NSString * _Nonnull senderId;
         [Abstract]
@@ -1871,11 +1930,6 @@ namespace WebRTCBinding
         RTCDtmfSender DtmfSender { get; }
     }
 
-    [BaseType(typeof(NSObject))]
-    [DisableDefaultCtor]
-    interface RTCRtpSender : IRTCRtpSender
-    {
-    }
 
     // @interface RTCRtpTransceiverInit : NSObject
     [BaseType(typeof(NSObject))]
@@ -1894,10 +1948,12 @@ namespace WebRTCBinding
         RTCRtpEncodingParameters[] SendEncodings { get; set; }
     }
 
+    public interface IRTCRtpTransceiver { }
+
     // @protocol RTCRtpTransceiver <NSObject>
     [Protocol, Model]
     [BaseType(typeof(NSObject))]
-    interface IRTCRtpTransceiver
+    interface RTCRtpTransceiver
     {
         // @required @property (readonly, nonatomic) RTCRtpMediaType mediaType;
         [Abstract]
@@ -1917,7 +1973,7 @@ namespace WebRTCBinding
         // @required @property (readonly, nonatomic) RTCRtpReceiver * _Nonnull receiver;
         [Abstract]
         [Export("receiver")]
-        RTCRtpReceiver Receiver { get; }
+        IRTCRtpReceiver Receiver { get; }
 
         // @required @property (readonly, nonatomic) BOOL isStopped;
         [Abstract]
@@ -1940,12 +1996,6 @@ namespace WebRTCBinding
         void Stop();
     }
 
-    // @interface RTCRtpTransceiver : NSObject <RTCRtpTransceiver>
-    [BaseType(typeof(NSObject))]
-    [DisableDefaultCtor]
-    interface RTCRtpTransceiver : IRTCRtpTransceiver
-    {
-    }
 
     // @interface RTCSessionDescription : NSObject
     [BaseType(typeof(NSObject))]

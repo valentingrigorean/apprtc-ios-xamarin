@@ -1,0 +1,32 @@
+--cache=/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache
+--dev=/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/bin/iPhone/Debug/device-builds/iphone10.6-12.3.1/AppRTC.iOS.app
+--executable=AppRTC.iOS
+ --debug
+ --sgen-conc
+ --linksdkonly
+--sdkroot=/Applications/Xcode.app/Contents/Developer
+--sdk=12.2
+--targetver=12.2
+ --aot-options=-O=-float32
+ --http-message-handler=NSUrlSessionHandler
+ --abi=arm64
+--symbollist=/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-symbols.list
+ --dsym=no
+-r=/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/bin/Debug/AppRTC.dll
+-r=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono/Xamarin.iOS/mscorlib.dll
+-r=/Users/valentingrigorean/work/apprtc-ios-xamarin/src/WebRTCBinding/bin/Debug/NativeLibrary.dll
+-r=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono/Xamarin.iOS/OpenTK-1.0.dll
+-r=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono/Xamarin.iOS/System.Core.dll
+-r=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono/Xamarin.iOS/System.dll
+-r=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono/Xamarin.iOS/System.Numerics.dll
+-r=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono/Xamarin.iOS/System.Numerics.Vectors.dll
+-r=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono/Xamarin.iOS/System.Xml.dll
+-r=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono/Xamarin.iOS/Xamarin.iOS.dll
+-r=/Users/valentingrigorean/.nuget/packages/xamarin.essentials/1.1.0/lib/xamarinios10/Xamarin.Essentials.dll
+-r=/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/bin/Debug/AppRTC.dll
+-r=/Users/valentingrigorean/work/apprtc-ios-xamarin/src/WebRTCBinding/bin/Debug/NativeLibrary.dll
+-r=/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/bin/Debug/Newtonsoft.Json.dll
+-r=/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/bin/Debug/Square.SocketRocket.dll
+ --target-framework=Xamarin.iOS,v1.0
+--root-assembly=/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/bin/iPhone/Debug/AppRTC.iOS.exe
+ -v -v -v -v

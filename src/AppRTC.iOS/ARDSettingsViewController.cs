@@ -106,7 +106,8 @@ namespace AppRTC.iOS
             {
                 var rowPath = NSIndexPath.FromItemSection(i, section);
                 var cell = tableView.CellAt(rowPath);
-                cell.Accessory = UITableViewCellAccessory.None;
+                if (cell != null)
+                    cell.Accessory = UITableViewCellAccessory.None;
             }
         }
 
@@ -171,7 +172,7 @@ namespace AppRTC.iOS
             var cell = tableView.DequeueReusableCell(dequeueIdentifier);
             if (cell == null)
             {
-                cell = new UITableViewCell(UITableViewCellStyle.Default, dequeueIdentifier);                
+                cell = new UITableViewCell(UITableViewCellStyle.Default, dequeueIdentifier);
             }
 
             var resolution = VideoResolutionArray[indexPath.Row];

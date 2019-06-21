@@ -40,8 +40,8 @@ namespace AppRTC
 
         public string VideoResolution
         {
-            get => Storage[kVideoCodecKey].ToString();
-            set => SetValue(kVideoCodecKey, new NSString(value));
+            get => Storage[kVideoResolutionKey].ToString();
+            set => SetValue(kVideoResolutionKey, new NSString(value));
         }
 
         public NSData VideoCodec
@@ -54,7 +54,7 @@ namespace AppRTC
         {
             get
             {
-                var value = Storage[kBitrateKey].ToString();
+                var value = Storage[kBitrateKey]?.ToString();
                 if (int.TryParse(value, out int result))
                 {
                     return result;

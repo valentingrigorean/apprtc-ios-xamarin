@@ -54,7 +54,6 @@ namespace AppRTC.iOS
         private readonly UIButton _routeChangeButton;
         private readonly UIButton _cameraSwitchButton;
         private readonly UIButton _hangupButton;
-        private readonly UILabel _statusLabel;
         private CGSize _remoteVideoSize;
 
         public ARDVideoCallView(CGRect frame) : base(frame)
@@ -64,14 +63,14 @@ namespace AppRTC.iOS
                 Delegate = this
             };
 
-            AddSubview(RemoteView);
+            //AddSubview(RemoteView);
 
             LocalVideoView = new RTCCameraPreviewView();
             AddSubview(LocalVideoView);
 
             StatsView = new ARDStatsView(CGRect.Empty);
             StatsView.Hidden = true;
-            AddSubview(StatsView);
+            //AddSubview(StatsView);
 
             _routeChangeButton = new UIButton(UIButtonType.Custom);
             _routeChangeButton.BackgroundColor = UIColor.White;
@@ -79,7 +78,7 @@ namespace AppRTC.iOS
             _routeChangeButton.Layer.MasksToBounds = true;
             _routeChangeButton.SetImage(UIImage.FromBundle("ic_surround_sound_black_24dp.png"), UIControlState.Normal);
             _routeChangeButton.TouchUpInside += OnRouteChange;
-            AddSubview(_routeChangeButton);
+            //AddSubview(_routeChangeButton);
 
 
             _cameraSwitchButton = new UIButton(UIButtonType.Custom);
@@ -88,7 +87,7 @@ namespace AppRTC.iOS
             _cameraSwitchButton.Layer.MasksToBounds = true;
             _cameraSwitchButton.SetImage(UIImage.FromBundle("ic_switch_video_black_24dp.png"), UIControlState.Normal);
             _cameraSwitchButton.TouchUpInside += OnCameraSwitch;
-            AddSubview(_cameraSwitchButton);
+            //AddSubview(_cameraSwitchButton);
 
             _hangupButton = new UIButton(UIButtonType.Custom);
             _hangupButton.BackgroundColor = UIColor.White;
@@ -96,12 +95,12 @@ namespace AppRTC.iOS
             _hangupButton.Layer.MasksToBounds = true;
             _hangupButton.SetImage(UIImage.FromBundle("ic_call_end_black_24dp.png").ChangeColor(UIColor.Red), UIControlState.Normal);
             _hangupButton.TouchUpInside += OnHangup;
-            AddSubview(_hangupButton);
+            //AddSubview(_hangupButton);
 
-            _statusLabel = new UILabel();
-            _statusLabel.Font = UIFont.FromName("Roboto", 16);
-            _statusLabel.TextColor = UIColor.White;
-            AddSubview(_statusLabel);
+            StatusLabel = new UILabel();
+            StatusLabel.Font = UIFont.FromName("Roboto", 16);
+            StatusLabel.TextColor = UIColor.White;
+            //AddSubview(StatusLabel);
 
             var tapRecognizer = new UITapGestureRecognizer(DidTripleTap);
             tapRecognizer.NumberOfTapsRequired = 3;
@@ -172,8 +171,8 @@ namespace AppRTC.iOS
             routeChangeFrame.Location = new CGPoint(routeChangeFrame.GetMaxX() + kButtonPadding, routeChangeFrame.Location.Y);
             _routeChangeButton.Frame = routeChangeFrame;
 
-            _statusLabel.SizeToFit();
-            _statusLabel.Center = new CGPoint(bounds.GetMidX(), bounds.GetMidY());
+            StatusLabel.SizeToFit();
+            StatusLabel.Center = new CGPoint(bounds.GetMidX(), bounds.GetMidY());
         }
 
         [Export("videoView:didChangeVideoSize:")]

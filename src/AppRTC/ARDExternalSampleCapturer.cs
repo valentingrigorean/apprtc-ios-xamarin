@@ -23,9 +23,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using CoreMedia;
+using WebRTCBinding;
+
 namespace AppRTC
 {
-    public class ARDExternalSampleCapturer
+    public interface IARDExternalSampleDelegate
     {
+        void DidCaptureSampleBuffer(CMSampleBuffer sampleBuffer);
+    }
+
+    public class ARDExternalSampleCapturer : RTCVideoCapturer, IARDExternalSampleDelegate
+    {
+
+        public ARDExternalSampleCapturer(IRTCVideoCapturerDelegate capturerDelegate) : base(capturerDelegate)
+        {
+
+        }
+
+        public void DidCaptureSampleBuffer(CMSampleBuffer sampleBuffer)
+        {
+            if (sampleBuffer.NumSamples != 1 || !sampleBuffer.IsValid || !sampleBuffer.DataIsReady)
+                return;
+
+            var pixelBuffer = sampleBuffer.GetImageBuffer();
+            if (pixelBuffer == null)
+                return;
+
+            var rtcPixelBuffer = new RTCCPI
+            var timeSpanNS = sampleBuffer
+        }
     }
 }

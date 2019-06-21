@@ -30,10 +30,10 @@ namespace AppRTC.iOS.Extenstions
 {
     public static class UIVIewControllerExtensions
     {
-        public static void ShowAlertWithMessage(this UIViewController self, string message)
+        public static void ShowAlertWithMessage(this UIViewController self, string message, Action handler = null)
         {
             var alert = UIAlertController.Create("", message, UIAlertControllerStyle.Alert);
-            var defaultAction = UIAlertAction.Create("OK", UIAlertActionStyle.Default, (_) => { });
+            var defaultAction = UIAlertAction.Create("OK", UIAlertActionStyle.Default, (_) => handler?.Invoke());
 
             alert.AddAction(defaultAction);
 

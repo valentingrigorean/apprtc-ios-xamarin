@@ -48,25 +48,33 @@ namespace AppRTC
         {
             var values = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
             ARDSignalingMessage message = new ARDSignalingMessage();
-            var type = values["type"];
-            switch (type)
+
+            if (values.ContainsKey("type"))
             {
-                case "candidate":
-                    int.TryParse(values["label"], out int label);
-                    RTCIceCandidate candidate = new RTCIceCandidate(values["id"], label, values["candidate"]);
-                    message = new ARDICECandidateMessage(candidate);
-                    break;
-                case "offer":
-                case "answer":
-                    RTCSessionDescription description = new RTCSessionDescription(RTCSdpType.Answer, values["sdp"]);
-                    message = new ARDSessionDescriptionMessage(description);
-                    break;
-                case "bye":
-                    message = new ARDByeMessage();
-                    break;
-                default:
-                    System.Diagnostics.Debug.WriteLine($"Unexpected type: {type}");
-                    break;
+                var type = values["type"] ?? "";
+                switch (type)
+                {
+                    case "candidate":
+                        int.TryParse(values["label"], out int label);
+                        RTCIceCandidate candidate = new RTCIceCandidate(values["id"], label, values["candidate"]);
+                        message = new ARDICECandidateMessage(candidate);
+                        break;
+                    case "offer":
+                    case "answer":
+                        RTCSessionDescription description = new RTCSessionDescription(RTCSdpType.Answer, values["sdp"]);
+                        message = new ARDSessionDescriptionMessage(description);
+                        break;
+                    case "bye":
+                        message = new ARDByeMessage();
+                        break;
+                    default:
+                        System.Diagnostics.Debug.WriteLine($"ARDSignalingMessage unexpected type: {type}");
+                        break;
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"ARDSignalingMessage invalid json: {json}");
             }
 
             return message;
@@ -135,7 +143,7 @@ namespace AppRTC
                     Type = ARDSignalingMessageType.Answer;
                     break;
                 default:
-                    System.Diagnostics.Debug.WriteLine($"Unexpected type: {Type}");
+                    System.Diagnostics.Debug.WriteLine($"ARDSessionDescriptionMessage unexpected type: {Type}");
                     break;
             }
 

@@ -30,6 +30,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Timers;
 using AppRTC.Extensions;
+using CoreFoundation;
 using Foundation;
 using UIKit;
 using WebRTCBinding;
@@ -43,6 +44,47 @@ namespace AppRTC
         Connected
     }
 
+    public enum ARDAppErrorCode
+    {
+        Unknown = -1,
+        RoomFull = -2,
+        CreateSDP = -3,
+        SetSDP = -4,
+        InvalidClient = -5,
+        InvalidRoom = -6
+    }
+
+    public class ARDAppException : Exception
+    {
+        public ARDAppException(Exception ex) : base("Unknown error.", ex)
+        {
+            ErrorCode = ARDAppErrorCode.Unknown;
+        }
+
+        public ARDAppException(string message) : this(message, "", ARDAppErrorCode.Unknown)
+        {
+        }
+
+        public ARDAppException(string message, string errorDomain) : this(message, errorDomain, ARDAppErrorCode.Unknown)
+        {
+
+        }
+
+        public ARDAppException(string message, ARDAppErrorCode errorCode) : this(message, "", errorCode)
+        {
+
+        }
+
+        public ARDAppException(string message, string errorDomain, ARDAppErrorCode errorCode) : base(message)
+        {
+            ErrorDomain = errorDomain;
+            ErrorCode = errorCode;
+        }
+
+        public string ErrorDomain { get; }
+        public ARDAppErrorCode ErrorCode { get; }
+    }
+
     public interface IARDAppClientDelegate
     {
         void DidChangeState(ARDAppClientState state);
@@ -50,7 +92,7 @@ namespace AppRTC
         void DidCreateLocalCapturer(RTCCameraVideoCapturer localCapturer);
         void DidReceiveLocalVideoTrack(RTCVideoTrack localVideoTrack);
         void DidReceiveRemoteVideoTrack(RTCVideoTrack remoteVideoTrack);
-        void DidError(Exception error);
+        void DidError(ARDAppException error);
         void DidGetStats(RTCLegacyStatsReport[] stats);
         void DidCreateLocalFileCapturer(RTCFileVideoCapturer fileCapturer);
         void DidCreateLocalExternalSampleCapturer(ARDExternalSampleCapturer externalSampleCapturer);
@@ -72,27 +114,18 @@ namespace AppRTC
 
     public partial class ARDAppClient : NSObject
     {
-
-        const string kARDAppClientErrorDomain = @"ARDAppClient";
-        const int kARDAppClientErrorUnknown = -1;
-        const int kARDAppClientErrorRoomFull = -2;
-        const int kARDAppClientErrorCreateSDP = -3;
-        const int kARDAppClientErrorSetSDP = -4;
-        const int kARDAppClientErrorInvalidClient = -5;
-        const int kARDAppClientErrorInvalidRoom = -6;
-
-
+        const string kARDAppClientErrorDomain = @"ARDAppClient";       
+        
         private readonly ARDAppEngineClient _roomServerClient = new ARDAppEngineClient();
 
         private readonly List<ARDSignalingMessage> _messageQueue = new List<ARDSignalingMessage>();
 
-
-        private ARDAppClientConfig _config;
+        private readonly ARDAppClientConfig _config;
         private ARDSettingsModel _settings;
         private bool _isLoopback;
         private ARDAppClientState _state;
-        private ARDWebSocketClient _channel;
-        private ARDLoopbackWebSocketChannel _loopbackChannel;
+        private ARDSignalingChannel _channel;
+        private ARDSignalingChannel _loopbackChannel;
 
         private RTCPeerConnectionFactory _factory;
         private RTCPeerConnection _peerConnection;
@@ -237,18 +270,20 @@ namespace AppRTC
 
             Task.Run(async () =>
             {
+                RTCIceServer[] iceServers = new RTCIceServer[0];
                 try
                 {
-                    var iceServers = await _turnClient.RequestServersAsync();
-                    _iceServers.Clear();
-                    _iceServers.AddRange(iceServers);
-                    _isTurnComplete = true;
-                    InvokeOnMainThread(StartSignalingIfReady);
+                    iceServers = await _turnClient.RequestServersAsync();
                 }
                 catch (Exception ex)
                 {
-                    InvokeOnMainThread(() => Delegate?.DidError(ex));
+                    Console.WriteLine("Error retrieving TURN servers: {0}", ex);
                 }
+
+                _iceServers.Clear();
+                _iceServers.AddRange(iceServers);
+                _isTurnComplete = true;
+                DispatchQueue.MainQueue.DispatchAsync(StartSignalingIfReady);
             });
 
             Task.Run(async () =>
@@ -261,7 +296,7 @@ namespace AppRTC
                     if (joinError != null)
                     {
                         Console.WriteLine("Failed to join room:{0} on room server.", roomId);
-                        InvokeOnMainThread(() => Delegate?.DidError(joinError));
+                        DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidError(joinError));
                         return;
                     }
 
@@ -292,7 +327,7 @@ namespace AppRTC
                     _webSocketUrl = serverProps.wss_url;
                     _webSocketRestUrl = serverProps.wss_post_url;
 
-                    InvokeOnMainThread(() =>
+                    DispatchQueue.MainQueue.DispatchAsync(() =>
                     {
                         RegisterWithColliderIfReady();
                         StartSignalingIfReady();
@@ -301,7 +336,8 @@ namespace AppRTC
                 }
                 catch (Exception ex)
                 {
-                    InvokeOnMainThread(() => Delegate?.DidError(ex));
+                    Console.WriteLine("Failed to join room:{0} on room server.\nError: {1}", roomId, ex);
+                    DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidError(new ARDAppException(ex)));
                 }
 
             });
@@ -345,11 +381,13 @@ namespace AppRTC
             _hasReceivedSdp = false;
             _messageQueue.Clear();
 
-            _factory.StopAecDump();
-            _peerConnection.StopRtcEventLog();
+            _factory?.StopAecDump();
 
-            _peerConnection.Close();
+            _peerConnection?.StopRtcEventLog();
+
+            _peerConnection?.Close();
             _peerConnection = null;
+
             State = ARDAppClientState.Disconnected;
 
             if (_config.EnableTracing)
@@ -359,11 +397,9 @@ namespace AppRTC
         }
 
 
-
-
         private void RegisterWithColliderIfReady()
         {
-            if (HasJoinedRoomServerRoom)
+            if (!HasJoinedRoomServerRoom)
             {
                 return;
             }
@@ -399,6 +435,8 @@ namespace AppRTC
 
             var constraints = DefaultPeerConnectionConstraints;
             var config = new RTCConfiguration();
+            config.SdpSemantics = RTCSdpSemantics.UnifiedPlan;
+
             var pcert = RTCCertificate.GenerateCertificateWithParams(new NSDictionary<NSString, NSObject>(
                 new[] { "expires".ToNative(), "name".ToNative() },
                 new NSObject[] { new NSNumber(100000), new NSString("RSASSA-PKCS1-v1_5") }));
@@ -441,28 +479,35 @@ namespace AppRTC
         private void SendSignalingMessage(ARDSignalingMessage message)
         {
             if (_isInitiator)
-            {
-                Task.Run(async () =>
-                {
-                    try
-                    {
-                        var response = await _roomServerClient.SendMessageAsync(message, _roomId, _cliendId);
-                        var messageError = ErrorForMessageResultType(response.Type);
-                        if (messageError != null)
-                        {
-                            InvokeOnMainThread(() => Delegate?.DidError(messageError));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        InvokeOnMainThread(() => Delegate?.DidError(ex));
-                    }
-                });
-            }
+                SendSignalingMessageToRoomServer(message);
             else
-            {
+                SendSignalingMessageToCollider(message);           
+        }
+
+        private void SendSignalingMessageToCollider(ARDSignalingMessage message)
+        {
+            if (message != null)
                 _channel.SendMessage(message);
-            }
+        }
+
+        private void SendSignalingMessageToRoomServer(ARDSignalingMessage message)
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var response = await _roomServerClient.SendMessageAsync(message, _roomId, _cliendId);
+                    var messageError = ErrorForMessageResultType(response.Type);
+                    if (messageError != null)
+                    {
+                        DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidError(messageError));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidError(new ARDAppException(ex)));
+                }
+            });
         }
 
         private void ProcessSignalingMessage(ARDSignalingMessage msg)
@@ -520,7 +565,9 @@ namespace AppRTC
                 _peerConnection.AddTrack(_localVideoTrack, new[] { _config.MediaStreamId });
                 Delegate?.DidReceiveLocalVideoTrack(_localVideoTrack);
 
-                Delegate?.DidReceiveRemoteVideoTrack(VideoTransceiver()?.Receiver?.Track as RTCVideoTrack);
+                var receiver = VideoTransceiver()?.Receiver;
+
+                Delegate?.DidReceiveRemoteVideoTrack(receiver?.Track as RTCVideoTrack);
             }
 
         }
@@ -534,17 +581,25 @@ namespace AppRTC
 
             var source = _factory.VideoSource;
 
-
-            if (IsBroadcast)
+            if (ObjCRuntime.Runtime.Arch != ObjCRuntime.Arch.SIMULATOR)
             {
-                var capturer = new RTCCameraVideoCapturer(source);
-                Delegate?.DidCreateLocalCapturer(capturer);
+                if (IsBroadcast)
+                {
+                    var capturer = new ARDExternalSampleCapturer();
+                }
+                else
+                {
+                    var capturer = new RTCCameraVideoCapturer(source);
+                    Delegate?.DidCreateLocalCapturer(capturer);
+                }
             }
-
-            if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
+            else
             {
-                var fileCapturer = new RTCFileVideoCapturer(source);
-                Delegate?.DidCreateLocalFileCapturer(fileCapturer);
+                if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
+                {
+                    var fileCapturer = new RTCFileVideoCapturer(source);
+                    Delegate?.DidCreateLocalFileCapturer(fileCapturer);
+                }
             }
 
             return _factory.VideoTrackWithSource(source, _config.VideoTrackId);
@@ -590,30 +645,30 @@ namespace AppRTC
 
 
 
-        private static Exception ErrorForJoinResultType(ARDJoinResultType resultType)
+        private static ARDAppException ErrorForJoinResultType(ARDJoinResultType resultType)
         {
             switch (resultType)
             {
                 case ARDJoinResultType.Unknown:
-                    return new Exception("Unknown error.");
+                    return new ARDAppException("Unknown error.", kARDAppClientErrorDomain, ARDAppErrorCode.Unknown);
                 case ARDJoinResultType.Success:
                     return null;
                 case ARDJoinResultType.Full:
-                    return new Exception("Room is full.");
+                    return new ARDAppException("Room is full.", kARDAppClientErrorDomain, ARDAppErrorCode.Unknown);
             }
             return null;
         }
 
-        private static Exception ErrorForMessageResultType(ARDMessageResultType resultType)
+        private static ARDAppException ErrorForMessageResultType(ARDMessageResultType resultType)
         {
             switch (resultType)
             {
                 case ARDMessageResultType.Unknown:
-                    return new Exception("Unknown error.");
+                    return new ARDAppException("Unknown error.", kARDAppClientErrorDomain, ARDAppErrorCode.Unknown);
                 case ARDMessageResultType.InvalidClient:
-                    return new Exception("Invalid client.");
+                    return new ARDAppException("Invalid client.", kARDAppClientErrorDomain, ARDAppErrorCode.InvalidClient);
                 case ARDMessageResultType.InvalidRoom:
-                    return new Exception("Invalid room.");
+                    return new ARDAppException("Invalid room.", kARDAppClientErrorDomain, ARDAppErrorCode.InvalidRoom);
 
             }
             return null;

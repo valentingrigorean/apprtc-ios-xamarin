@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using CoreFoundation;
 using Foundation;
 using WebRTCBinding;
 
@@ -33,14 +34,15 @@ namespace AppRTC
     {
         public void DidCreateSessionDescription(RTCPeerConnection peerConnection, RTCSessionDescription sdp, NSError error)
         {
-            InvokeOnMainThread(() =>
+            DispatchQueue.MainQueue.DispatchAsync(() =>
             {
                 if (error != null)
                 {
+                    Console.WriteLine("Failed to create session description. Error: {0}", error);
                     Disconnect();
 
                     Console.WriteLine("Failed to create session description. Error:{0}", error);
-                    Delegate?.DidError(new Exception(error.Description));
+                    Delegate?.DidError(new ARDAppException("Failed to create session description.", kARDAppClientErrorDomain, ARDAppErrorCode.CreateSDP));
                     return;
                 }
 
@@ -79,7 +81,7 @@ namespace AppRTC
         public void DidChangeIceConnectionState(RTCPeerConnection peerConnection, RTCIceConnectionState newState)
         {
             Console.WriteLine("ICE state changed: {0}", newState);
-            InvokeOnMainThread(() => Delegate?.DidChangeConnectionState(newState));
+            DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidChangeConnectionState(newState));
         }
 
         public void DidChangeIceGatheringState(RTCPeerConnection peerConnection, RTCIceGatheringState newState)
@@ -89,7 +91,7 @@ namespace AppRTC
 
         public void DidGenerateIceCandidate(RTCPeerConnection peerConnection, RTCIceCandidate candidate)
         {
-            InvokeOnMainThread(() =>
+            DispatchQueue.MainQueue.DispatchAsync(() =>
             {
                 var message = new ARDICECandidateMessage(candidate);
                 SendSignalingMessage(message);
@@ -104,7 +106,7 @@ namespace AppRTC
 
         public void DidRemoveIceCandidates(RTCPeerConnection peerConnection, RTCIceCandidate[] candidates)
         {
-            InvokeOnMainThread(() =>
+            DispatchQueue.MainQueue.DispatchAsync(() =>
             {
                 var message = new ARDICECandidateRemovalMessage(candidates);
                 SendSignalingMessage(message);
@@ -117,14 +119,14 @@ namespace AppRTC
 
         public void DidSetSessionDescriptionWithError(RTCPeerConnection peerConnection, NSError error)
         {
-            InvokeOnMainThread(() =>
+            DispatchQueue.MainQueue.DispatchAsync(() =>
             {
                 if (error != null)
                 {
                     Console.WriteLine("Failed to set session description. Error: {0}", error);
                     Disconnect();
 
-                    Delegate?.DidError(new Exception("Failed to set session description."));
+                    Delegate?.DidError(new ARDAppException("Failed to set session description.", kARDAppClientErrorDomain, ARDAppErrorCode.SetSDP));
                     return;
                 }
 

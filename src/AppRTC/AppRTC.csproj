@@ -71,7 +71,6 @@
     <Compile Include="Extensions\RTCVideoCodecInfoExtensions.cs" />
     <Compile Include="ARDStatsBuilder.cs" />
     <Compile Include="ARDCaptureController.cs" />
-    <Compile Include="ARDFileCaptureController.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -80,11 +80,11 @@ namespace AppRTC.iOS
         {
             _remoteVideoTrack = null;
             _videoCallView.LocalVideoView.CaptureSession = null;
-            _captureController.StopCapture();
+            _captureController?.StopCapture();
             _captureController = null;
             _fileCaptureController?.StopCapture();
             _fileCaptureController = null;
-            _client.Disconnect();
+            _client?.Disconnect();
             Delegate?.DidFinish(this);
         }
     }

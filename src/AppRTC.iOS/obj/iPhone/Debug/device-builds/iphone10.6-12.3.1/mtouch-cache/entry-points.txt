@@ -1,0 +1,121 @@
+Function=xamarin_timezone_get_data
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/mscorlib.dll
+Function=xamarin_GetFolderPath
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/mscorlib.dll
+Function=xamarin_log
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/mscorlib.dll
+Function=xamarin_find_protocol_wrapper_type
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/Xamarin.iOS.dll
+Function=xamarin_release_block_on_main_thread
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/Xamarin.iOS.dll
+Function=xamarin_get_block_descriptor
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/Xamarin.iOS.dll
+Function=xamarin_IntPtr_objc_msgSend_IntPtr
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/Xamarin.iOS.dll
+Function=UIApplicationMain
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/Xamarin.iOS.dll
+Function=xamarin_start_wwan
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/System.dll
+Function=CreateZStream
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/System.dll
+Function=CloseZStream
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/System.dll
+Function=Flush
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/System.dll
+Function=ReadZStream
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/System.dll
+Function=WriteZStream
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/System.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCAudioSession
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCAudioSessionConfiguration
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCAudioSource
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCAudioTrack
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCCallbackLogger
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCCameraPreviewView
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCCameraVideoCapturer
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCCertificate
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCConfiguration
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCCryptoOptions
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCDataBuffer
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCDataChannel
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCDataChannelConfiguration
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCDefaultVideoDecoderFactory
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCDefaultVideoEncoderFactory
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCDispatcher
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCEAGLVideoView
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCFileLogger
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCFileVideoCapturer
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCH264ProfileLevelId
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCIceCandidate
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCIceServer
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCLegacyStatsReport
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCMediaConstraints
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCMediaSource
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCMediaStream
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCMediaStreamTrack
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCMetricsSampleInfo
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCPeerConnection
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCPeerConnectionFactory
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCPeerConnectionFactoryOptions
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCRtcpParameters
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCRtpCodecParameters
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCRtpEncodingParameters
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCRtpHeaderExtension
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCRtpParameters
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCRtpTransceiverInit
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCSessionDescription
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCSSLAdapter
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCTracking
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCVideoCapturer
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCVideoCodecInfo
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCVideoFrame
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCVideoSource
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_RTCVideoTrack
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/NativeLibrary.dll
+ObjectiveCClass=OBJC_CLASS_$_SRWebSocket
+	/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC.iOS/obj/iPhone/Debug/device-builds/iphone10.6-12.3.1/mtouch-cache/1-Link/Square.SocketRocket.dll
+Function=mono_pmip

@@ -34,7 +34,7 @@ namespace AppRTC.Extensions
     {
         public static string AsJSON(this RTCSessionDescription rtcSessionDescription)
         {
-            return JsonConvert.SerializeObject(new { type = rtcSessionDescription.Type, sdp = rtcSessionDescription.Description });
+            return JsonConvert.SerializeObject(new { type = RTCSessionDescription.StringForType(rtcSessionDescription.Type), sdp = rtcSessionDescription.Description });
         }
 
         public static string AsJSON(this RTCIceCandidate rtcICEcandidate)

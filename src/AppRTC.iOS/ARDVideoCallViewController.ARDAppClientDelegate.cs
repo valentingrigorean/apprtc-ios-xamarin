@@ -25,7 +25,6 @@
 // THE SOFTWARE.
 using System;
 using AppRTC.iOS.Extenstions;
-using Foundation;
 using UIKit;
 using WebRTCBinding;
 
@@ -80,7 +79,7 @@ namespace AppRTC.iOS
             }
         }
 
-        public void DidError(Exception error)
+        public void DidError(ARDAppException error)
         {
             Hangup();
             this.ShowAlertWithMessage(error.Message);

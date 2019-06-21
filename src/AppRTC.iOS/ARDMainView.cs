@@ -37,7 +37,6 @@ namespace AppRTC.iOS
     }
 
 
-
     public class ARDMainView : UIView, IUITextFieldDelegate
     {
         const float kRoomTextFieldHeight = 40;

@@ -147,6 +147,7 @@
         <Compile Include="Extenstions\UIVIewControllerExtensions.cs" />
         <Compile Include="ARDVideoCallViewController.ARDAppClientDelegate.cs" />
         <Compile Include="ARDVideoCallViewController.ARDVideoCallViewDelegate.cs" />
+        <Compile Include="ARDFileCaptureController.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\AppRTC\AppRTC.csproj">

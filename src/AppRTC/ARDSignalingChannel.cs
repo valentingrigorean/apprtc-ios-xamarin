@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using AppRTC.Extensions;
@@ -64,7 +65,6 @@ namespace AppRTC
         {
             Url = url;
             RestUrl = restUrl;
-
         }
 
         public IARDSignalingChannelDelegate Delegate { get; protected set; }
@@ -92,6 +92,7 @@ namespace AppRTC
     public class ARDWebSocketClient : ARDSignalingChannel, IDisposable
     {
         private readonly WebSocket _socket;
+        private bool _isRegisteringWithColider;
 
         public ARDWebSocketClient(string url, string restUrl, IARDSignalingChannelDelegate @delegate) : base(url, restUrl)
         {
@@ -140,7 +141,7 @@ namespace AppRTC
             Contract.Requires(!string.IsNullOrEmpty(RoomId));
             Contract.Requires(!string.IsNullOrEmpty(RoomId));
             var data = message.JsonData;
-            var payload = new NSString(data, NSStringEncoding.UTF8);
+            var payload = data != null ? new NSString(data, NSStringEncoding.UTF8) : new NSString("{}");
             switch (State)
             {
                 case ARDSignalingChannelState.Registered:
@@ -168,6 +169,7 @@ namespace AppRTC
 
         private void RegisterWithCollider()
         {
+            _isRegisteringWithColider = true;
             if (State == ARDSignalingChannelState.Registered)
             {
                 return;
@@ -186,6 +188,8 @@ namespace AppRTC
             //// full.
             _socket.Send(new NSString(message, NSStringEncoding.UTF8));
             State = ARDSignalingChannelState.Registered;
+
+            _isRegisteringWithColider = false;
         }
 
         private void Wire(WebSocket socket)
@@ -271,8 +275,7 @@ namespace AppRTC
         public ARDLoopbackWebSocketChannel(string url, string restUrl) : base(url, restUrl, null)
         {
             Delegate = this;
-        }
-       
+        }       
 
         public void DidChangeState(ARDSignalingChannel channel, ARDSignalingChannelState state)
         {
@@ -289,7 +292,6 @@ namespace AppRTC
                     var dsc = description.Sdp;
 
                     dsc = dsc.Replace("offer", "answer");
-
                     var answerDescription = new RTCSessionDescription(RTCSdpType.Answer, dsc);
                     var answer = new ARDSessionDescriptionMessage(answerDescription);
                     SendMessage(answer);

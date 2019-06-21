@@ -1,12 +1,5 @@
 ﻿<Properties StartupConfiguration="{C4733747-A5E6-4929-B646-62FB15E38E57}|Default">
   <MonoDevelop.Ide.Workbench>
-    <Files>
-      <File FileName="src/WebRTCBinding/ApiDefinition.cs" Line="1852" Column="27" />
-      <File FileName="src/WebRTCBinding/original_api_definition.txt" Line="2119" Column="26" />
-      <File FileName="src/AppRTC.iOS/Main.cs" Line="12" Column="1" />
-      <File FileName="src/AppRTC.iOS/Main.cs" Line="12" Column="1" />
-      <File FileName="src/AppRTC/ARDAppClient.cs" Line="514" Column="17" />
-    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
@@ -15,13 +8,16 @@
               <Node name="Extensions" expanded="True" />
               <Node name="ARDAppClient.cs" selected="True" />
             </Node>
-            <Node name="AppRTC.iOS" expanded="True">
-              <Node name="Extenstions" expanded="True" />
-            </Node>
+            <Node name="AppRTC.iOS" expanded="True" />
             <Node name="WebRTCBinding" expanded="True">
               <Node name="NativeReferenceFolder" expanded="True" />
             </Node>
           </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State>
+          <Value>Storage[kVideoCodecKey]</Value>
         </State>
       </Pad>
     </Pads>
@@ -34,6 +30,11 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/valentingrigorean/work/apprtc-ios-xamarin/src/WebRTCBinding/RTCTracking.cs" relfile="src/WebRTCBinding/RTCTracking.cs" line="54" column="1" />
+      <Breakpoint file="/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/ARDAppClient.PeerConnectionDelegate.cs" relfile="src/AppRTC/ARDAppClient.PeerConnectionDelegate.cs" line="83" column="1" />
+      <Breakpoint file="/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/ARDAppClient.PeerConnectionDelegate.cs" relfile="src/AppRTC/ARDAppClient.PeerConnectionDelegate.cs" line="104" column="1" />
+      <Breakpoint file="/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/ARDAppClient.cs" relfile="src/AppRTC/ARDAppClient.cs" line="484" column="1" />
+      <Breakpoint file="/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/ARDAppClient.cs" relfile="src/AppRTC/ARDAppClient.cs" line="600" column="1" />
+      <Breakpoint file="/Users/valentingrigorean/work/apprtc-ios-xamarin/src/AppRTC/ARDAppClient.cs" relfile="src/AppRTC/ARDAppClient.cs" line="586" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />

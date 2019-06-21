@@ -1,0 +1,6 @@
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/WebRTCBinding/bin/Debug/NativeLibrary.dll
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/WebRTCBinding/bin/Debug/NativeLibrary.pdb
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/WebRTCBinding/obj/Debug/WebRTCBinding.csprojAssemblyReference.cache
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/WebRTCBinding/obj/Debug/WebRTCBinding.csproj.CoreCompileInputs.cache
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/WebRTCBinding/obj/Debug/NativeLibrary.dll
+/Users/valentingrigorean/work/apprtc-ios-xamarin/src/WebRTCBinding/obj/Debug/NativeLibrary.pdb
