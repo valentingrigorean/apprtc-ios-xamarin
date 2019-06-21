@@ -1,5 +1,5 @@
 ﻿//
-// ARDAppClient.cs
+// RTCCVPixelBuffer.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -23,37 +23,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using CoreMedia;
+using System;
 using CoreVideo;
-using WebRTCBinding;
 
-namespace AppRTC
+namespace WebRTCBinding
 {
-    public interface IARDExternalSampleDelegate
+    public partial class RTCCVPixelBuffer
     {
-        void DidCaptureSampleBuffer(CMSampleBuffer sampleBuffer);
-    }
-
-    public class ARDExternalSampleCapturer : RTCVideoCapturer, IARDExternalSampleDelegate
-    {
-
-        public ARDExternalSampleCapturer(IRTCVideoCapturerDelegate capturerDelegate) : base(capturerDelegate)
+        private static unsafe bool CropAndScaleToWrapper(CVPixelBuffer outputPixelBuffer, byte[] buffer, Func<CVPixelBuffer, IntPtr, bool> handler)
         {
-
+            if (outputPixelBuffer == null)
+                throw new ArgumentNullException(nameof(outputPixelBuffer));
+            if (buffer != null && buffer.Length > 0)
+                fixed (byte* ptr = &buffer[0])
+                    return handler(outputPixelBuffer, new IntPtr(ptr));
+            return handler(outputPixelBuffer, IntPtr.Zero);
         }
 
-        public void DidCaptureSampleBuffer(CMSampleBuffer sampleBuffer)
+
+        public bool CropAndScaleTo(CVPixelBuffer outputPixelBuffer, byte[] buffer)
         {
-            if (sampleBuffer.NumSamples != 1 || !sampleBuffer.IsValid || !sampleBuffer.DataIsReady)
-                return;
-
-            var pixelBuffer =  sampleBuffer.GetImageBuffer() as CVPixelBuffer;
-            if (pixelBuffer == null)
-                return;
-
-            var rtcPixelBuffer = new RTCCVPixelBuffer(pixelBuffer);
-            var timeSpanNS = (long)(sampleBuffer.PresentationTimeStamp.Seconds * 1000);
-            var videoFrame = new RTCVideoFrame(rtcPixelBuffer, RTCVideoRotation.Rotation0, timeSpanNS);
+            return CropAndScaleToWrapper(outputPixelBuffer, buffer, CropAndScaleTo);
         }
+
     }
 }

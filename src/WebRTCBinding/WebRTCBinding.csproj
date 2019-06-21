@@ -7,7 +7,7 @@
     <ProjectGuid>{1821EA2C-D549-45D7-8272-18D3064D4C55}</ProjectGuid>
     <TemplateGuid>{b6f3ff35-79b2-4f25-a2fc-60a7cf61013b}</TemplateGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>NativeLibrary</RootNamespace>
+    <RootNamespace>WebRTCBinding</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>NativeLibrary</AssemblyName>
   </PropertyGroup>
@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RTCCVPixelBuffer.cs" />
   </ItemGroup>
   <ItemGroup>
     <NativeReference Include="WebRTC.framework">

@@ -585,7 +585,8 @@ namespace AppRTC
             {
                 if (IsBroadcast)
                 {
-                    var capturer = new ARDExternalSampleCapturer();
+                    var capturer = new ARDExternalSampleCapturer(source);
+                    Delegate?.DidCreateLocalExternalSampleCapturer(capturer);
                 }
                 else
                 {

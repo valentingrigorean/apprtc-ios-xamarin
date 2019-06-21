@@ -164,9 +164,11 @@ namespace WebRTCBinding
         RTCVideoCodecInfo[] SupportedCodecs { get; }
     }
 
-    [BaseType(typeof(NSObject))]
+    public interface IRTCVideoFrameBuffer { }
+
     [Protocol]
-    interface IRTCVideoFrameBuffer
+    [BaseType(typeof(NSObject))]
+    interface RTCVideoFrameBuffer
     {
         //@property(nonatomic, readonly) int width;
         [Export("width")]
@@ -174,6 +176,60 @@ namespace WebRTCBinding
         //@property(nonatomic, readonly) int height;
         [Export("height")]
         int Height { get; }
+    }
+
+    [BaseType(typeof(NSObject))]
+    public interface RTCYUVPlanarBuffer : IRTCVideoFrameBuffer
+    {
+        // @property (readonly, nonatomic) int chromaWidth;
+        [Export("chromaWidth")]
+        int ChromaWidth { get; }
+
+        // @property (readonly, nonatomic) int chromaHeight;
+        [Export("chromaHeight")]
+        int ChromaHeight { get; }
+
+        // @property (readonly, nonatomic) const uint8_t * dataY;
+        [Export("dataY")]
+        unsafe IntPtr DataY { get; }
+
+        // @property (readonly, nonatomic) const uint8_t * dataU;
+        [Export("dataU")]
+        unsafe IntPtr DataU { get; }
+
+        // @property (readonly, nonatomic) const uint8_t * dataV;
+        [Export("dataV")]
+        unsafe IntPtr DataV { get; }
+
+        // @property (readonly, nonatomic) int strideY;
+        [Export("strideY")]
+        int StrideY { get; }
+
+        // @property (readonly, nonatomic) int strideU;
+        [Export("strideU")]
+        int StrideU { get; }
+
+        // @property (readonly, nonatomic) int strideV;
+        [Export("strideV")]
+        int StrideV { get; }
+
+        // - (instancetype)initWithWidth:(int)width height:(int) height dataY:(const uint8_t*)dataY dataU:(const uint8_t*)dataU dataV:(const uint8_t*)dataV;
+        [Export("initWithWidth:height:dataY:dataU:dataV:")]
+        IntPtr Constructor(int width, int height, IntPtr dataY, IntPtr dataU, IntPtr dataV);
+
+        // - (instancetype)initWithWidth:(int)width height:(int)height;
+        [Export("initWithWidth:height:")]
+        IntPtr Constructor(int width, int height);
+
+        //- (instancetype)initWithWidth:(int)width height:(int) height strideY:(int) strideY strideU:(int) strideU strideV:(int) strideV;
+        [Export("initWithWidth:height:strideY:strideU:strideV:")]
+        IntPtr Constructor(int width, int height, int strideY, int strideU, int strideV);
+    }
+
+    [BaseType(typeof(RTCYUVPlanarBuffer))]
+    interface RTCI420Buffer
+    {
+
     }
 
 
@@ -228,7 +284,8 @@ namespace WebRTCBinding
 
         // -(BOOL)cropAndScaleTo:(CVPixelBufferRef _Nonnull)outputPixelBuffer withTempBuffer:(uint8_t * _Nullable)tmpBuffer;
         [Export("cropAndScaleTo:withTempBuffer:")]
-         bool CropAndScaleTo(CVPixelBuffer outputPixelBuffer, [NullAllowed] byte[] tmpBuffer);
+        [Internal]
+        bool CropAndScaleTo(CVPixelBuffer outputPixelBuffer, [NullAllowed] IntPtr buffer);
     }
 
 
@@ -787,7 +844,7 @@ namespace WebRTCBinding
     interface RTCCameraPreviewView
     {
         // @property (nonatomic, strong) AVCaptureSession * captureSession;
-        [Export("captureSession", ArgumentSemantic.Strong),NullAllowed]
+        [Export("captureSession", ArgumentSemantic.Strong), NullAllowed]
         AVCaptureSession CaptureSession { get; set; }
     }
 
