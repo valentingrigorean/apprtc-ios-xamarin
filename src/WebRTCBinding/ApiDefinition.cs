@@ -179,7 +179,8 @@ namespace WebRTCBinding
     }
 
     [BaseType(typeof(NSObject))]
-    public interface RTCYUVPlanarBuffer : IRTCVideoFrameBuffer
+    [Protocol]
+    interface RTCYUVPlanarBuffer : RTCVideoFrameBuffer
     {
         // @property (readonly, nonatomic) int chromaWidth;
         [Export("chromaWidth")]
@@ -226,8 +227,8 @@ namespace WebRTCBinding
         IntPtr Constructor(int width, int height, int strideY, int strideU, int strideV);
     }
 
-    [BaseType(typeof(RTCYUVPlanarBuffer))]
-    interface RTCI420Buffer
+    [BaseType(typeof(NSObject))]
+    interface RTCI420Buffer: RTCYUVPlanarBuffer
     {
 
     }
@@ -235,7 +236,7 @@ namespace WebRTCBinding
 
     // @interface RTCCVPixelBuffer : NSObject <RTCVideoFrameBuffer>
     [BaseType(typeof(NSObject))]
-    interface RTCCVPixelBuffer : IRTCVideoFrameBuffer
+    interface RTCCVPixelBuffer : RTCVideoFrameBuffer
     {
         // @property (readonly, nonatomic) CVPixelBufferRef _Nonnull pixelBuffer;
         [Export("pixelBuffer")]

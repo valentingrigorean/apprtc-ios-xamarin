@@ -67,11 +67,13 @@
     <Compile Include="Extensions\NSURLRequestExtensions.cs" />
     <Compile Include="ARDAppClient.ARDSignalingChannelDelegate.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="ARDExternalSampleCapturer.cs" />
     <Compile Include="Extensions\RTCVideoCodecInfoExtensions.cs" />
     <Compile Include="ARDStatsBuilder.cs" />
     <Compile Include="ARDCaptureController.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="ARDExternalSampleCapturer.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="SerialQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebRTCBinding\WebRTCBinding.csproj">

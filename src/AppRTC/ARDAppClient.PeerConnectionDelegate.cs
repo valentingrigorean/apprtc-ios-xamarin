@@ -60,7 +60,7 @@ namespace AppRTC
 
         public void DidChangeSignalingState(RTCPeerConnection peerConnection, RTCSignalingState stateChanged)
         {
-            Console.WriteLine("Signaling state changed:{0}", stateChanged);
+            Console.WriteLine("Signaling state changed:{0} ({1})", stateChanged, (int)stateChanged);
         }
 
         public void DidAddStream(RTCPeerConnection peerConnection, RTCMediaStream stream)
@@ -80,13 +80,13 @@ namespace AppRTC
 
         public void DidChangeIceConnectionState(RTCPeerConnection peerConnection, RTCIceConnectionState newState)
         {
-            Console.WriteLine("ICE state changed: {0}", newState);
+            Console.WriteLine("ICE state changed: {0} ({1})", newState, (int)newState);
             DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidChangeConnectionState(newState));
         }
 
         public void DidChangeIceGatheringState(RTCPeerConnection peerConnection, RTCIceGatheringState newState)
         {
-            Console.WriteLine("ICE gathering state changed:{0}", newState);
+            Console.WriteLine("ICE gathering state changed:{0} ({1})", newState, (int)newState);
         }
 
         public void DidGenerateIceCandidate(RTCPeerConnection peerConnection, RTCIceCandidate candidate)
@@ -101,7 +101,7 @@ namespace AppRTC
         [Export("peerConnection:didChangeConnectionState:")]
         public void DidChangeConnectionState(RTCPeerConnection peerConnection, RTCPeerConnectionState newState)
         {
-            Console.WriteLine("ICE+DTLS state changed:{0}", newState);
+            Console.WriteLine("ICE+DTLS state changed:{0} ({1})", newState, (int)newState);
         }
 
         public void DidRemoveIceCandidates(RTCPeerConnection peerConnection, RTCIceCandidate[] candidates)

@@ -158,6 +158,16 @@
         <Project>{1821EA2C-D549-45D7-8272-18D3064D4C55}</Project>
         <Name>WebRTCBinding</Name>
       </ProjectReference>
+      <ProjectReference Include="..\AppRTC.iOS.Broadcast\AppRTC.iOS.Broadcast.csproj">
+        <IsAppExtension>true</IsAppExtension>
+        <Project>{60B6C832-F192-473C-9B98-3A498ADD762B}</Project>
+        <Name>AppRTC.iOS.Broadcast</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\AppRTC.iOS.BroadcastUI\AppRTC.iOS.BroadcastUI.csproj">
+        <IsAppExtension>true</IsAppExtension>
+        <Project>{7C7EFD62-38C9-478B-892D-B817B0B90985}</Project>
+        <Name>AppRTC.iOS.BroadcastUI</Name>
+      </ProjectReference>
     </ItemGroup>
     <ItemGroup>
       <BundleResource Include="Resources\foreman.mp4" />
@@ -176,6 +186,9 @@
       <BundleResource Include="Resources\iPhone6p%403x.png" />
       <BundleResource Include="Resources\mozart.mp3" />
       <BundleResource Include="Resources\Roboto-Regular.ttf" />
+      <BundleResource Include="Resources\Icon-120.png" />
+      <BundleResource Include="Resources\Icon-180.png" />
+      <BundleResource Include="Resources\Icon.png" />
     </ItemGroup>
     <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

@@ -52,12 +52,11 @@ namespace AppRTC
             BaseAddress = new Uri(kARDRoomServerHostUrl)
         };
 
-
         public async Task<ARDJoinResponse> JoinRoomWithRoomIdAsync(string roomId, bool isLoopback)
         {
             var urlString = isLoopback ? string.Format(kARDRoomServerJoinFormatLoopback, roomId) : string.Format(kARDRoomServerJoinFormat, roomId);
             var roomUrl = new NSUrl(urlString);
-            Console.WriteLine("Joining room:{0} on room server.");
+            Console.WriteLine("Joining room:{0} on room server.", roomId);
             var response = await _httpClient.PostAsync(roomUrl, null).ConfigureAwait(false);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<ARDJoinResponse>(json);

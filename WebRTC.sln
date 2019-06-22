@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppRTC", "src\AppRTC\AppRTC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppRTC.iOS", "src\AppRTC.iOS\AppRTC.iOS.csproj", "{C4733747-A5E6-4929-B646-62FB15E38E57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppRTC.iOS.Broadcast", "src\AppRTC.iOS.Broadcast\AppRTC.iOS.Broadcast.csproj", "{60B6C832-F192-473C-9B98-3A498ADD762B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppRTC.iOS.BroadcastUI", "src\AppRTC.iOS.BroadcastUI\AppRTC.iOS.BroadcastUI.csproj", "{7C7EFD62-38C9-478B-892D-B817B0B90985}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -53,5 +57,29 @@ Global
 		{C4733747-A5E6-4929-B646-62FB15E38E57}.Debug|iPhone.Build.0 = Debug|iPhone
 		{C4733747-A5E6-4929-B646-62FB15E38E57}.Release|iPhone.ActiveCfg = Release|iPhone
 		{C4733747-A5E6-4929-B646-62FB15E38E57}.Release|iPhone.Build.0 = Release|iPhone
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Debug|x86.ActiveCfg = Debug|iPhoneSimulator
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Debug|x86.Build.0 = Debug|iPhoneSimulator
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Release|x86.ActiveCfg = Release|iPhoneSimulator
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Release|x86.Build.0 = Release|iPhoneSimulator
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Debug|iPhone.Build.0 = Debug|iPhone
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Release|iPhone.ActiveCfg = Release|iPhone
+		{60B6C832-F192-473C-9B98-3A498ADD762B}.Release|iPhone.Build.0 = Release|iPhone
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Debug|x86.ActiveCfg = Debug|iPhoneSimulator
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Debug|x86.Build.0 = Debug|iPhoneSimulator
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Release|x86.ActiveCfg = Release|iPhoneSimulator
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Release|x86.Build.0 = Release|iPhoneSimulator
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Debug|iPhone.Build.0 = Debug|iPhone
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Release|iPhone.ActiveCfg = Release|iPhone
+		{7C7EFD62-38C9-478B-892D-B817B0B90985}.Release|iPhone.Build.0 = Release|iPhone
 	EndGlobalSection
 EndGlobal

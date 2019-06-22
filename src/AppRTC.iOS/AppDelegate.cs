@@ -1,4 +1,6 @@
-﻿using Foundation;
+﻿using System;
+using System.Threading.Tasks;
+using Foundation;
 using UIKit;
 using WebRTCBinding;
 
@@ -32,8 +34,7 @@ namespace AppRTC.iOS
 
             root.NavigationBar.Translucent = false;
 
-            Window.RootViewController = root;
-
+            Window.RootViewController = root;            
             return true;
         }
 

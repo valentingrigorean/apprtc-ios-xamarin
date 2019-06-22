@@ -1,5 +1,5 @@
 ﻿//
-// ARDAppClient.cs
+// ARDExternalSampleCapturer.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -23,18 +23,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using System;
 using CoreMedia;
 using CoreVideo;
 using WebRTCBinding;
 
 namespace AppRTC
-{
-    public interface IARDExternalSampleDelegate
-    {
-        void DidCaptureSampleBuffer(CMSampleBuffer sampleBuffer);
-    }
+{  
 
-    public class ARDExternalSampleCapturer : RTCVideoCapturer, IARDExternalSampleDelegate
+    public class ARDExternalSampleCapturer : RTCVideoCapturer
     {
 
         public ARDExternalSampleCapturer(IRTCVideoCapturerDelegate capturerDelegate) : base(capturerDelegate)
@@ -47,13 +44,14 @@ namespace AppRTC
             if (sampleBuffer.NumSamples != 1 || !sampleBuffer.IsValid || !sampleBuffer.DataIsReady)
                 return;
 
-            var pixelBuffer =  sampleBuffer.GetImageBuffer() as CVPixelBuffer;
+            var pixelBuffer = sampleBuffer.GetImageBuffer() as CVPixelBuffer;
             if (pixelBuffer == null)
                 return;
 
             var rtcPixelBuffer = new RTCCVPixelBuffer(pixelBuffer);
             var timeSpanNS = (long)(sampleBuffer.PresentationTimeStamp.Seconds * 1000);
             var videoFrame = new RTCVideoFrame(rtcPixelBuffer, RTCVideoRotation.Rotation0, timeSpanNS);
+            Delegate?.Capturer(this, videoFrame);
         }
     }
 }

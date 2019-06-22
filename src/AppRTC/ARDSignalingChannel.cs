@@ -24,7 +24,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using AppRTC.Extensions;
@@ -92,13 +91,13 @@ namespace AppRTC
     public class ARDWebSocketClient : ARDSignalingChannel, IDisposable
     {
         private readonly WebSocket _socket;
-        private bool _isRegisteringWithColider;
 
         public ARDWebSocketClient(string url, string restUrl, IARDSignalingChannelDelegate @delegate) : base(url, restUrl)
         {
             Delegate = @delegate;
             _socket = new WebSocket(new NSUrl(url));
             Wire(_socket);
+            Console.WriteLine("Opening WebSocket.");
             _socket.Open();
         }
 
@@ -169,7 +168,6 @@ namespace AppRTC
 
         private void RegisterWithCollider()
         {
-            _isRegisteringWithColider = true;
             if (State == ARDSignalingChannelState.Registered)
             {
                 return;
@@ -188,8 +186,6 @@ namespace AppRTC
             //// full.
             _socket.Send(new NSString(message, NSStringEncoding.UTF8));
             State = ARDSignalingChannelState.Registered;
-
-            _isRegisteringWithColider = false;
         }
 
         private void Wire(WebSocket socket)
@@ -272,10 +268,11 @@ namespace AppRTC
 
     public class ARDLoopbackWebSocketChannel : ARDWebSocketClient, IARDSignalingChannelDelegate
     {
+
         public ARDLoopbackWebSocketChannel(string url, string restUrl) : base(url, restUrl, null)
         {
             Delegate = this;
-        }       
+        }
 
         public void DidChangeState(ARDSignalingChannel channel, ARDSignalingChannelState state)
         {
@@ -307,6 +304,6 @@ namespace AppRTC
                     // Nothing to do.
                     break;
             }
-        }
+        }       
     }
 }

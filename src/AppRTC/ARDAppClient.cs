@@ -114,8 +114,10 @@ namespace AppRTC
 
     public partial class ARDAppClient : NSObject
     {
-        const string kARDAppClientErrorDomain = @"ARDAppClient";       
-        
+        const string kARDAppClientErrorDomain = @"ARDAppClient";
+
+        private SerialQueue _serialQueue = new SerialQueue();
+
         private readonly ARDAppEngineClient _roomServerClient = new ARDAppEngineClient();
 
         private readonly List<ARDSignalingMessage> _messageQueue = new List<ARDSignalingMessage>();
@@ -492,7 +494,7 @@ namespace AppRTC
 
         private void SendSignalingMessageToRoomServer(ARDSignalingMessage message)
         {
-            Task.Run(async () =>
+            _serialQueue.Enqueue(async () =>
             {
                 try
                 {

@@ -34,7 +34,7 @@ namespace AppRTC.Extensions
     {
         public static string AsJSON(this RTCSessionDescription rtcSessionDescription)
         {
-            return JsonConvert.SerializeObject(new { type = RTCSessionDescription.StringForType(rtcSessionDescription.Type), sdp = rtcSessionDescription.Description });
+            return JsonConvert.SerializeObject(new { type = RTCSessionDescription.StringForType(rtcSessionDescription.Type), sdp = rtcSessionDescription.Sdp },Formatting.Indented);
         }
 
         public static string AsJSON(this RTCIceCandidate rtcICEcandidate)
@@ -46,7 +46,7 @@ namespace AppRTC.Extensions
                     id = rtcICEcandidate.SdpMid,
                     label = rtcICEcandidate.SdpMLineIndex,
                     candidate = rtcICEcandidate.Sdp
-                });
+                },Formatting.Indented);
         }
 
 
@@ -65,7 +65,7 @@ namespace AppRTC.Extensions
                 });
             }
 
-            return JsonConvert.SerializeObject(list);
+            return JsonConvert.SerializeObject(list,Formatting.Indented);
         }
     }
 }

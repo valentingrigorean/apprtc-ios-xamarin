@@ -60,8 +60,11 @@ namespace AppRTC
                         message = new ARDICECandidateMessage(candidate);
                         break;
                     case "offer":
+                        RTCSessionDescription description = new RTCSessionDescription(RTCSdpType.Offer, values["sdp"]);
+                        message = new ARDSessionDescriptionMessage(description);
+                        break;
                     case "answer":
-                        RTCSessionDescription description = new RTCSessionDescription(RTCSdpType.Answer, values["sdp"]);
+                        description = new RTCSessionDescription(RTCSdpType.Answer, values["sdp"]);
                         message = new ARDSessionDescriptionMessage(description);
                         break;
                     case "bye":

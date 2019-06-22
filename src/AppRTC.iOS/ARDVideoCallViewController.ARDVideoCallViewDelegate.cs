@@ -48,7 +48,7 @@ namespace AppRTC.iOS
                 session.LockForConfiguration();
                 session.OverrideOutputAudioPort(@override, out NSError error);
 
-                if (error != null)
+                if (error == null)
                     _portOvveride = @override;
                 else
                 {
@@ -71,7 +71,7 @@ namespace AppRTC.iOS
 
         public void DidSwitchCamera(ARDVideoCallView view)
         {
-            _captureController.SwitchCamera();
+            _captureController?.SwitchCamera();
         }
     }
 }
