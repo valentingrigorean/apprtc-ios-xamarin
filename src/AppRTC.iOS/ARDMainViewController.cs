@@ -37,11 +37,13 @@ namespace AppRTC.iOS
     {
         const string barButtonImageString = @"ic_settings_black_24dp.png";
         const string loopbackLaunchProcessArgument = @"loopback";
-        
+
         private ARDMainView _mainView;
         private AVAudioPlayer _audioPlayer;
 
-        public override void ViewDidLoad()
+#pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
+        public override async void ViewDidLoad()
+#pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
         {
             base.ViewDidLoad();
 
@@ -50,6 +52,8 @@ namespace AppRTC.iOS
             {
                 OnStartCall(null, "", true);
             }
+
+            await PermisionManager.GetRequiredPermissionAsync();
         }
 
         public override void LoadView()
@@ -59,6 +63,7 @@ namespace AppRTC.iOS
             _mainView = new ARDMainView(CGRect.Empty);
             _mainView.Delegate = this;
             _mainView.BackgroundColor = UIColor.White;
+
             View = _mainView;
 
             AddSettingsBarButton();
@@ -131,6 +136,7 @@ namespace AppRTC.iOS
                 else
                 {
                     ShowAlertWithMessage("Missing room name.");
+                    return;
                 }
             }
 

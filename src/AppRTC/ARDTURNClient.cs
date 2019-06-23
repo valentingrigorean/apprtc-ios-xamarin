@@ -33,7 +33,12 @@ using WebRTCBinding;
 
 namespace AppRTC
 {
-    public class ARDTURNClient
+    public interface IARDTURNClient
+    {
+        Task<RTCIceServer[]> RequestServersAsync();
+    }
+
+    public class ARDTURNClient : IARDTURNClient
     {
         const string kTURNRefererURLString = @"https://appr.tc";
 
@@ -44,7 +49,7 @@ namespace AppRTC
         public ARDTURNClient(string url)
         {
             _url = url;
-        }        
+        }
 
         public async Task<RTCIceServer[]> RequestServersAsync()
         {
@@ -59,7 +64,7 @@ namespace AppRTC
                 return new RTCIceServer(iceServer.urls, iceServer.username, iceServer.credential);
             }).ToArray();
 
-            if(array.Length == 0)
+            if (array.Length == 0)
             {
                 throw new Exception("Bad TURN response");
             }

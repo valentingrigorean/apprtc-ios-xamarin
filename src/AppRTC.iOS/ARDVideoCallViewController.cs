@@ -23,7 +23,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+//#define __PUSHER__
 using System;
+using AppRTC.Pusher;
 using CoreGraphics;
 using Foundation;
 using UIKit;
@@ -46,9 +48,15 @@ namespace AppRTC.iOS
         public ARDVideoCallViewController(string room, bool isLoopback, IARDVideoCallViewControllerDelegate @delegate)
         {
             Delegate = @delegate;
+            var settings = new ARDSettingsModel();
 
-            _client = new ARDAppClient(this);
-            _client.ConnectToRoomWithId(room, new ARDSettingsModel(), isLoopback);
+#if __PUSHER__
+            _client = PusherARDAppClientFactory.Create(this, isLoopback);
+            _client.ConnectToRoomWithId(room, settings, isLoopback);
+#else
+            _client = ARDAppClient.Create(@delegate: this);
+            _client.ConnectToRoomWithId(room, settings, isLoopback);
+#endif
         }
 
         public IARDVideoCallViewControllerDelegate Delegate { get; set; }
@@ -60,6 +68,7 @@ namespace AppRTC.iOS
             _videoCallView = new ARDVideoCallView(CGRect.Empty);
             _videoCallView.Delegate = this;
             View = _videoCallView;
+
 
             var session = RTCAudioSession.SharedInstance;
             session.AddDelegate(this);

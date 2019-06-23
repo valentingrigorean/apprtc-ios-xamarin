@@ -228,7 +228,7 @@ namespace WebRTCBinding
     }
 
     [BaseType(typeof(NSObject))]
-    interface RTCI420Buffer: RTCYUVPlanarBuffer
+    interface RTCI420Buffer : RTCYUVPlanarBuffer
     {
 
     }
@@ -1096,6 +1096,8 @@ namespace WebRTCBinding
         IntPtr Constructor(NSData data, bool isBinary);
     }
 
+    public interface IRTCDataChannelDelegate { }
+
     // @protocol RTCDataChannelDelegate <NSObject>
     [Protocol, Model]
     [BaseType(typeof(NSObject))]
@@ -1109,11 +1111,11 @@ namespace WebRTCBinding
         // @required -(void)dataChannel:(RTCDataChannel * _Nonnull)dataChannel didReceiveMessageWithBuffer:(RTCDataBuffer * _Nonnull)buffer;
         [Abstract]
         [Export("dataChannel:didReceiveMessageWithBuffer:")]
-        void DataChannel(RTCDataChannel dataChannel, RTCDataBuffer buffer);
+        void DidReceiveMessageWithBuffer(RTCDataChannel dataChannel, RTCDataBuffer buffer);
 
         // @optional -(void)dataChannel:(RTCDataChannel * _Nonnull)dataChannel didChangeBufferedAmount:(uint64_t)amount;
         [Export("dataChannel:didChangeBufferedAmount:")]
-        void DataChannel(RTCDataChannel dataChannel, ulong amount);
+        void DidChangeBufferedAmount(RTCDataChannel dataChannel, ulong amount);
     }
 
     // @interface RTCDataChannel : NSObject
@@ -1171,7 +1173,7 @@ namespace WebRTCBinding
 
         [Wrap("WeakDelegate")]
         [NullAllowed]
-        RTCDataChannelDelegate Delegate { get; set; }
+        IRTCDataChannelDelegate Delegate { get; set; }
 
         // @property (nonatomic, weak) id<RTCDataChannelDelegate> _Nullable delegate;
         [NullAllowed, Export("delegate", ArgumentSemantic.Weak)]
@@ -1626,34 +1628,72 @@ namespace WebRTCBinding
         // -(void)stopRtcEventLog;
         [Export("stopRtcEventLog")]
         void StopRtcEventLog();
-
-
-        // -(RTCDataChannel * _Nullable)dataChannelForLabel:(NSString * _Nonnull)label configuration:(RTCDataChannelConfiguration * _Nonnull)configuration;
-        [Export("dataChannelForLabel:configuration:")]
-        [return: NullAllowed]
-        RTCDataChannel DataChannelForLabel(string label, RTCDataChannelConfiguration configuration);
     }
 
-    // typedef void (^RTCStatisticsCompletionHandler)(RTCStatisticsReport * _Nonnull);
+    //[BaseType(typeof(NSObject))]
+    //[DisableDefaultCtor]
+    //interface RTCStatisticsReport
+    //{
+    //    //@property(nonatomic, readonly) CFTimeInterval timestamp_us;
+    //    [Export("timestamp_us")]
+    //    double TimespamUs { get; }
+
+    //    //@property(nonatomic, readonly) NSDictionary<NSString*, RTCStatistics*>* statistics;
+    //    [Export("values")]
+    //    NSDictionary<NSString, RTCStatistics> Values { get; }
+    //}
+
+    //[BaseType(typeof(NSObject))]
+    //[DisableDefaultCtor]
+    //interface RTCStatistics : INativeObject
+    //{
+    //    //@property(nonatomic, readonly) NSString *id;
+    //    [Export("id")]
+    //    string Id { get; }
+
+    //    //@property(nonatomic, readonly) CFTimeInterval timestamp_us;
+    //    [Export("timestamp_us")]
+    //    double TimespamUs { get; }
+
+    //    // @property(nonatomic, readonly) NSString* type;
+    //    [Export("type")]
+    //    string Type { get; }
+
+    //    //@property(nonatomic, readonly) NSDictionary<NSString*, NSObject*>* values;
+    //    [Export("values")]
+    //    NSDictionary<NSString, NSObject> Values { get; }
+    //}
+
+    //// typedef void (^RTCStatisticsCompletionHandler)(RTCStatisticsReport * _Nonnull);
     //delegate void RTCStatisticsCompletionHandler(RTCStatisticsReport arg0);
+
+
 
     [Category]
     [BaseType(typeof(RTCPeerConnection))]
     interface RTCPeerConnectionExtensions
     {
+        // -(RTCDataChannel * _Nullable)dataChannelForLabel:(NSString * _Nonnull)label configuration:(RTCDataChannelConfiguration * _Nonnull)configuration;
+        [Export("dataChannelForLabel:configuration:")]
+        [return: NullAllowed]
+        RTCDataChannel DataChannelForLabel(string label, RTCDataChannelConfiguration configuration);
+
+        [Export("senderWithKind:streamId:")]
+        RTCRtpSender SenderWithKind(string kind, string streamId);
+
         // -(void)statsForTrack:(RTCMediaStreamTrack * _Nullable)mediaStreamTrack statsOutputLevel:(RTCStatsOutputLevel)statsOutputLevel completionHandler:(void (^ _Nullable)(NSArray<RTCLegacyStatsReport *> * _Nonnull))completionHandler;
         [Export("statsForTrack:statsOutputLevel:completionHandler:")]
         void StatsForTrack([NullAllowed] RTCMediaStreamTrack mediaStreamTrack, RTCStatsOutputLevel statsOutputLevel, [NullAllowed] Action<RTCLegacyStatsReport[]> completionHandler);
 
-        // -(void)statisticsWithCompletionHandler:(RTCStatisticsCompletionHandler _Nonnull)completionHandler;
-        // [Export("statisticsWithCompletionHandler:")]
-        // void StatisticsWithCompletionHandler(RTCStatisticsCompletionHandler completionHandler);
+        //// -(void)statisticsWithCompletionHandler:(RTCStatisticsCompletionHandler _Nonnull)completionHandler;
+        //[Export("statisticsWithCompletionHandler:")]
+        //void StatisticsWithCompletionHandler(RTCStatisticsCompletionHandler completionHandler);
 
-        // -(void)statisticsForSender:(RTCRtpSender * _Nonnull)sender completionHandler:(RTCStatisticsCompletionHandler _Nonnull)completionHandler;
+        //// -(void)statisticsForSender:(RTCRtpSender * _Nonnull)sender completionHandler:(RTCStatisticsCompletionHandler _Nonnull)completionHandler;
         //[Export("statisticsForSender:completionHandler:")]
         //void StatisticsForSender(RTCRtpSender sender, RTCStatisticsCompletionHandler completionHandler);
 
-        // -(void)statisticsForReceiver:(RTCRtpReceiver * _Nonnull)receiver completionHandler:(RTCStatisticsCompletionHandler _Nonnull)completionHandler;
+        //// -(void)statisticsForReceiver:(RTCRtpReceiver * _Nonnull)receiver completionHandler:(RTCStatisticsCompletionHandler _Nonnull)completionHandler;
         //[Export("statisticsForReceiver:completionHandler:")]
         //void StatisticsForReceiver(RTCRtpReceiver receiver, RTCStatisticsCompletionHandler completionHandler);
     }

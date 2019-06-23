@@ -105,7 +105,6 @@ namespace AppRTC
         public long AecDumpMaxSizeInBytes { get; set; } = 0x5e6;
         public long RtcEventLogMaxSizeInBytes { get; set; } = 0x5e6;
 
-        public string IceServerRequestUrl { get; set; } = "https://appr.tc/params";
         public string MediaStreamId { get; set; } = "ARDAMS";
         public string AudioTrackId { get; set; } = @"ARDAMSa0";
         public string VideoTrackId { get; set; } = @"ARDAMSv0";
@@ -116,13 +115,15 @@ namespace AppRTC
     {
         const string kARDAppClientErrorDomain = @"ARDAppClient";
 
-        private SerialQueue _serialQueue = new SerialQueue();
+        //private SerialQueue _serialQueue = new SerialQueue();
 
-        private readonly ARDAppEngineClient _roomServerClient = new ARDAppEngineClient();
+        private readonly IARDRoomServerClient _roomServerClient;
 
         private readonly List<ARDSignalingMessage> _messageQueue = new List<ARDSignalingMessage>();
 
         private readonly ARDAppClientConfig _config;
+        private readonly IARDSignalingChannelFactory _channelFactory;
+
         private ARDSettingsModel _settings;
         private bool _isLoopback;
         private ARDAppClientState _state;
@@ -141,14 +142,13 @@ namespace AppRTC
         private string _webSocketRestUrl;
 
 
-        private readonly ARDTURNClient _turnClient;
+        private readonly IARDTURNClient _turnClient;
         private bool _isTurnComplete;
 
         private readonly List<RTCIceServer> _iceServers;
         private readonly RTCFileLogger _fileLogger;
 
         private Timer _timer;
-        private bool _shouldGetStats;
 
         private bool HasJoinedRoomServerRoom => !string.IsNullOrEmpty(_cliendId);
 
@@ -183,21 +183,32 @@ namespace AppRTC
 
         private RTCMediaConstraints DefaultAnswerConstraints => DefaultOfferConstraints;
 
-        public ARDAppClient(ARDAppClientConfig config = null)
+
+        private ARDAppClient(ARDAppClientConfig config, IARDAppClientDelegate @delegate, IARDSignalingChannelFactory channelFactory, IARDTURNClient turnClient, IARDRoomServerClient roomServerClient)
         {
-            _config = config ?? new ARDAppClientConfig();
-            _turnClient = new ARDTURNClient(_config.IceServerRequestUrl);
+            _config = config;
+            _channelFactory = channelFactory;
+            _turnClient = turnClient;
+            _roomServerClient = roomServerClient;
+
             _iceServers = new List<RTCIceServer>();
             _fileLogger = new RTCFileLogger();
             _fileLogger.Start();
-        }
 
-        public ARDAppClient(IARDAppClientDelegate @delegate, ARDAppClientConfig config = null) : this(config)
-        {
             Delegate = @delegate;
         }
 
-        public bool ShouldGetStats => _shouldGetStats;
+
+        public static ARDAppClient Create(ARDAppClientConfig config = null, IARDAppClientDelegate @delegate = null, IARDSignalingChannelFactory channelFactory = null, IARDTURNClient turnClient = null, IARDRoomServerClient roomServerClient = null)
+        {
+            config = config ?? new ARDAppClientConfig();
+            channelFactory = channelFactory ?? new DefaultARDSignalingChannelFactory();
+            turnClient = turnClient ?? new ARDTURNClient("https://appr.tc/params");
+            roomServerClient = roomServerClient ?? new ARDAppEngineClient();
+            return new ARDAppClient(config, @delegate, channelFactory, turnClient, roomServerClient);
+        }
+
+        public bool ShouldGetStats { get; private set; }
 
         public ARDAppClientState State
         {
@@ -227,13 +238,13 @@ namespace AppRTC
 
         public void SetShouldGetStats(bool shouldGetStats)
         {
-            if (_shouldGetStats == shouldGetStats)
+            if (ShouldGetStats == shouldGetStats)
                 return;
             if (shouldGetStats)
             {
                 _timer = new Timer(1000);
                 _timer.Elapsed += OnTimerEvent;
-
+                _timer.Start();
             }
             else
             {
@@ -241,12 +252,12 @@ namespace AppRTC
                 _timer.Elapsed -= OnTimerEvent;
                 _timer = null;
             }
-            _shouldGetStats = shouldGetStats;
+            ShouldGetStats = shouldGetStats;
         }
 
         private void OnTimerEvent(object sender, ElapsedEventArgs e)
         {
-            _peerConnection.StatsForTrack(null, RTCStatsOutputLevel.Debug, (stats) => Delegate?.DidGetStats(stats));
+            _peerConnection.StatsForTrack(null, RTCStatsOutputLevel.Debug, (stats) => DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidGetStats(stats)));
         }
 
         public void ConnectToRoomWithId(string roomId, ARDSettingsModel settings, bool isLoopback)
@@ -373,7 +384,7 @@ namespace AppRTC
                 {
                     _channel.SendMessage(new ARDByeMessage());
                 }
-
+                _channel.Disconnect();
                 _channel = null;
             }
 
@@ -408,12 +419,12 @@ namespace AppRTC
 
             if (_channel == null)
             {
-                _channel = new ARDWebSocketClient(_webSocketUrl, _webSocketRestUrl, this);
+                _channel = _channelFactory.CreateChannel(_webSocketUrl, _webSocketRestUrl, this);
 
 
                 if (_isLoopback)
                 {
-                    _loopbackChannel = new ARDLoopbackWebSocketChannel(_webSocketUrl, _webSocketRestUrl);
+                    _loopbackChannel = _channelFactory.CreateChannelLoopback(_webSocketUrl, _webSocketRestUrl);
                 }
 
             }
@@ -422,7 +433,7 @@ namespace AppRTC
 
             if (_isLoopback)
             {
-                _loopbackChannel.RegisterForRoomId(_roomId, "LOOPBACK_CLIENT_ID");
+                _loopbackChannel?.RegisterForRoomId(_roomId, "LOOPBACK_CLIENT_ID");
             }
         }
 
@@ -444,6 +455,16 @@ namespace AppRTC
                 new NSObject[] { new NSNumber(100000), new NSString("RSASSA-PKCS1-v1_5") }));
 
             _peerConnection = _factory.PeerConnectionWithConfiguration(config, constraints, this);
+
+            var channelConfig = new RTCDataChannelConfiguration();
+            channelConfig.IsOrdered = true;
+            channelConfig.IsNegotiated = true;
+            channelConfig.MaxRetransmits = 30;
+            channelConfig.MaxRetransmitTimeMs = 3000;
+            channelConfig.StreamId = 1;
+
+
+            var channel = _peerConnection.DataChannelForLabel("test", channelConfig);
 
             CreateMediaSenders();
 
@@ -483,7 +504,7 @@ namespace AppRTC
             if (_isInitiator)
                 SendSignalingMessageToRoomServer(message);
             else
-                SendSignalingMessageToCollider(message);           
+                SendSignalingMessageToCollider(message);
         }
 
         private void SendSignalingMessageToCollider(ARDSignalingMessage message)
@@ -494,7 +515,7 @@ namespace AppRTC
 
         private void SendSignalingMessageToRoomServer(ARDSignalingMessage message)
         {
-            _serialQueue.Enqueue(async () =>
+            Task.Run(async () =>
             {
                 try
                 {

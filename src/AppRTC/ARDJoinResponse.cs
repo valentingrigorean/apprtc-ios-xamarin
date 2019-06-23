@@ -56,10 +56,10 @@ namespace AppRTC
         public IList<string> messages { get; set; }
         public string version_info { get; set; }
         public string pc_constraints { get; set; }
-        public IList<object> error_messages { get; set; }
+        public IList<string> error_messages { get; set; }
         public string include_loopback_js { get; set; }
         public string ice_server_url { get; set; }
-        public IList<object> warning_messages { get; set; }
+        public IList<string> warning_messages { get; set; }
         public string room_id { get; set; }
         public string callstats_params { get; set; }
         public string ice_server_transports { get; set; }
@@ -69,7 +69,6 @@ namespace AppRTC
         public string wss_post_url { get; set; }
         public string media_constraints { get; set; }
         public string pc_config { get; set; }
-
     }
 
 

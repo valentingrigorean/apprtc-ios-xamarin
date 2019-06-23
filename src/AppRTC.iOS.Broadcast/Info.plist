@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>AppRTC.iOS.Broadcast</string>
+	<string>AppRTCMobile</string>
 	<key>CFBundleName</key>
 	<string>AppRTC.iOS.Broadcast</string>
 	<key>CFBundleIdentifier</key>

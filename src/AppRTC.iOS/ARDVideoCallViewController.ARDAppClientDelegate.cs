@@ -48,6 +48,7 @@ namespace AppRTC.iOS
             {
                 case ARDAppClientState.Disconnected:
                     Console.WriteLine("Client disconnected.");
+                    Hangup();
                     break;
                 case ARDAppClientState.Connecting:
                     Console.WriteLine("Client connecting.");
@@ -81,8 +82,7 @@ namespace AppRTC.iOS
 
         public void DidError(ARDAppException error)
         {
-            Hangup();
-            this.ShowAlertWithMessage(error.Message);
+            this.ShowAlertWithMessage(error.Message, Hangup);
         }
 
         public void DidGetStats(RTCLegacyStatsReport[] stats)
@@ -98,7 +98,7 @@ namespace AppRTC.iOS
         public void DidReceiveRemoteVideoTrack(RTCVideoTrack remoteVideoTrack)
         {
             SetRemoteVideoTrack(remoteVideoTrack);
-            _videoCallView.StatusLabel.Hidden = true;
+            RTCDispatcher.DispatchAsyncOnType(RTCDispatcherQueueType.Main, () => _videoCallView.StatusLabel.Hidden = true);
         }
 
         private string StatusTextForState(RTCIceConnectionState state)

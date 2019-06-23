@@ -1,5 +1,5 @@
 ﻿//
-// ARDStatsView.cs
+// PusherTurnClient.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -24,49 +24,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using UIKit;
-using CoreGraphics;
+using System.Threading.Tasks;
 using WebRTCBinding;
 
-namespace AppRTC.iOS
+namespace AppRTC.Pusher
 {
-    public class ARDStatsView : UIView
+    public class PusherARDTurnClient : IARDTURNClient
     {
-        private readonly UILabel _statsLabel;
-        private readonly ARDStatsBuilder _statsBuilder;
-
-        public ARDStatsView(CGRect frame) : base(frame)
+        public async Task<RTCIceServer[]> RequestServersAsync()
         {
-            _statsLabel = new UILabel();
-            _statsLabel.Lines = 0;
-            _statsLabel.Font = UIFont.FromName("Roboto", 12);
-            _statsLabel.AdjustsFontSizeToFitWidth = true;
-            _statsLabel.MinimumScaleFactor = 0.6f;
-            _statsLabel.TextColor = UIColor.Green;
-            AddSubview(_statsLabel);
-            BackgroundColor = UIColor.Black.ColorWithAlpha(0.6f);
-
-            _statsBuilder = new ARDStatsBuilder();
-        }
-
-        public void SetStats(RTCLegacyStatsReport[] stats)
-        {
-            foreach (var report in stats)
+            await Task.Delay(500);
+            return new[]
             {
-                _statsBuilder.ParseStatsReport(report);
-            }
-            _statsLabel.Text = _statsBuilder.Stats;
-        }
-
-        public override void LayoutSubviews()
-        {
-            base.LayoutSubviews();
-            _statsLabel.Frame = Bounds;
-        }
-
-        public override CGSize SizeThatFits(CGSize size)
-        {
-            return _statsLabel.SizeThatFits(size);
+                new RTCIceServer(new[]{ "turn: 46.101.100.97:3478 ? transport = udp" }),
+                new RTCIceServer(new []{"stun:46.101.100.97" },"usr1","DooM19888")
+            };
         }
     }
 }

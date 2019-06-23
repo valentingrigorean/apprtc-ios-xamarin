@@ -115,6 +115,7 @@ namespace AppRTC
 
         public void DidOpenDataChannel(RTCPeerConnection peerConnection, RTCDataChannel dataChannel)
         {
+            Console.WriteLine(dataChannel);
         }
 
         public void DidSetSessionDescriptionWithError(RTCPeerConnection peerConnection, NSError error)
@@ -129,8 +130,9 @@ namespace AppRTC
                     Delegate?.DidError(new ARDAppException("Failed to set session description.", kARDAppClientErrorDomain, ARDAppErrorCode.SetSDP));
                     return;
                 }
-
-                if (!_isInitiator && _peerConnection.LocalDescription != null)
+                // If we're answering and we've just set the remote offer we need to create
+                // an answer and set the local description.
+                if (!_isInitiator && _peerConnection.LocalDescription == null)
                 {
                     var constraints = DefaultAnswerConstraints;
                     _peerConnection.AnswerForConstraints(constraints, (sdp, err) =>

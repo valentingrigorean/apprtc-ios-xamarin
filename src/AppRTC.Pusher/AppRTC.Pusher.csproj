@@ -5,13 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{44B9AD03-EBFE-4796-968F-174F08A5793E}</ProjectGuid>
+    <ProjectGuid>{EBC7B566-6C9E-48CF-8105-76AACFDB81F1}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TemplateGuid>{a52b8a63-bc84-4b47-910d-692533484892}</TemplateGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>AppRTC</RootNamespace>
+    <RootNamespace>AppRTC.Pusher</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>AppRTC</AssemblyName>
+    <AssemblyName>AppRTC.Pusher</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,56 +36,42 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\packages\Newtonsoft.Json.12.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Plugin.Permissions">
-      <HintPath>..\..\packages\Plugin.Permissions.3.0.0.12\lib\xamarinios10\Plugin.Permissions.dll</HintPath>
+    <Reference Include="PusherServer.Core">
+      <HintPath>..\..\packages\PusherServer.4.1.0\lib\netStandard1.6\PusherServer.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Square.SocketRocket">
-      <HintPath>..\..\packages\Square.SocketRocket.0.5.1\lib\Xamarin.iOS\Square.SocketRocket.dll</HintPath>
+    <Reference Include="SuperSocket.ClientEngine">
+      <HintPath>..\..\packages\SuperSocket.ClientEngine.Core.0.10.0\lib\netstandard1.3\SuperSocket.ClientEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocket4Net">
+      <HintPath>..\..\packages\WebSocket4Net.0.15.2\lib\netstandard1.3\WebSocket4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="PusherClient">
+      <HintPath>..\..\packages\Pusher.NetStandard.0.5.7\lib\netstandard2.0\PusherClient.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
-    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ARDAppClient.cs" />
-    <Compile Include="ARDSettingsModel.cs" />
-    <Compile Include="ARDAppEngineClient.cs" />
-    <Compile Include="ARDJoinResponse.cs" />
-    <Compile Include="ARDSignalingMessage.cs" />
-    <Compile Include="ARDMessageResponse.cs" />
-    <Compile Include="Extensions\NSDataExtensions.cs" />
-    <Compile Include="Extensions\ARDSignalingMessage.cs" />
-    <Compile Include="ARDSettingsStore.cs" />
-    <Compile Include="ARDTURNClient.cs" />
-    <Compile Include="ARDTurnResponse.cs" />
-    <Compile Include="Extensions\ARDJoinResponseExtensions.cs" />
-    <Compile Include="ARDAppClient.PeerConnectionDelegate.cs" />
-    <Compile Include="ARDSignalingChannel.cs" />
-    <Compile Include="Extensions\NSURLRequestExtensions.cs" />
-    <Compile Include="ARDAppClient.ARDSignalingChannelDelegate.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Extensions\RTCVideoCodecInfoExtensions.cs" />
-    <Compile Include="ARDStatsBuilder.cs" />
-    <Compile Include="ARDCaptureController.cs" />
-    <Compile Include="Extensions\DictionaryExtensions.cs" />
-    <Compile Include="ARDExternalSampleCapturer.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="SerialQueue.cs" />
-    <Compile Include="ARDBitrateTracker.cs" />
-    <Compile Include="ARDUtilities.cs" />
-    <Compile Include="PermisionManager.cs" />
-    <Compile Include="IARDSignalingChannelFactory.cs" />
-    <Compile Include="DefaultARDSignalingChannelFactory.cs" />
-    <Compile Include="ARDWebSocketClient.cs" />
+    <Compile Include="PusherARDTurnClient.cs" />
+    <Compile Include="PusherARDSignalingChannelFactory.cs" />
+    <Compile Include="PusherARDSignalingChannel.cs" />
+    <Compile Include="PusherARDRoomServerClient.cs" />
+    <Compile Include="PusherARDAppClientFactory.cs" />
+    <Compile Include="PusherServerConfig.cs" />
+    <Compile Include="PusherClientConfig.cs" />
+    <Compile Include="PusherMessage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppRTC\AppRTC.csproj">
+      <Project>{44B9AD03-EBFE-4796-968F-174F08A5793E}</Project>
+      <Name>AppRTC</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WebRTCBinding\WebRTCBinding.csproj">
       <Project>{1821EA2C-D549-45D7-8272-18D3064D4C55}</Project>
       <Name>WebRTCBinding</Name>

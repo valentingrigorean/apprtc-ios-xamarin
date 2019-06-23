@@ -19,6 +19,8 @@ namespace AppRTC.iOS
             set;
         }
 
+        public static UIEdgeInsets SafeAreaInsets { get; private set; }
+
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             // Override point for customization after application launch.
@@ -30,11 +32,12 @@ namespace AppRTC.iOS
 
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
             Window.MakeKeyAndVisible();
+            SafeAreaInsets = Window.SafeAreaInsets;
             var root = new UINavigationController(new ARDMainViewController());
 
             root.NavigationBar.Translucent = false;
 
-            Window.RootViewController = root;            
+            Window.RootViewController = root;
             return true;
         }
 

@@ -44,7 +44,7 @@ namespace AppRTC.iOS.Broadcast
             base.BroadcastStarted(setupInfo);
 
             var settingsModel = new ARDSettingsModel();
-            _client = new ARDAppClient(this);
+            _client = ARDAppClient.Create(@delegate: this);
             _client.IsBroadcast = true;
             var roomName = "";
             if (setupInfo.ContainsKey("roomName".ToNative()))

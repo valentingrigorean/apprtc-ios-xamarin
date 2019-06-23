@@ -51,6 +51,7 @@ namespace AppRTC.iOS
         const float kStatusBarHeight = 20;
 
 
+
         private readonly UIButton _routeChangeButton;
         private readonly UIButton _cameraSwitchButton;
         private readonly UIButton _hangupButton;
@@ -151,16 +152,16 @@ namespace AppRTC.iOS
             var localVideoFrame = new CGRect(0, 0, kLocalVideoViewSize, kLocalVideoViewSize);
             // Place the view in the bottom right.
             localVideoFrame.Location = new CGPoint(
-                bounds.GetMaxX() - localVideoFrame.Size.Width - kLocalVideoViewPadding, bounds.GetMaxY() - localVideoFrame.Size.Height - kLocalVideoViewPadding);
+                bounds.GetMaxX() - localVideoFrame.Size.Width - kLocalVideoViewPadding, bounds.GetMaxY() - localVideoFrame.Size.Height - kLocalVideoViewPadding - AppDelegate.SafeAreaInsets.Top);
 
             LocalVideoView.Frame = localVideoFrame;
 
             // Place stats at the top.
             var statsSize = StatsView.SizeThatFits(bounds.Size);
-            StatsView.Frame = new CGRect(bounds.GetMinX(), bounds.GetMinY() + kStatusBarHeight, statsSize.Width, statsSize.Height);
+            StatsView.Frame = new CGRect(bounds.GetMinX(), bounds.GetMinY() + kStatusBarHeight + AppDelegate.SafeAreaInsets.Top, statsSize.Width, statsSize.Height);
 
             // Place hangup button in the bottom left.
-            _hangupButton.Frame = new CGRect(bounds.GetMinX() + kButtonPadding, bounds.GetMaxY() - kButtonPadding - kButtonSize, kButtonSize, kButtonSize);
+            _hangupButton.Frame = new CGRect(bounds.GetMinX() + kButtonPadding, bounds.GetMaxY() - kButtonPadding - kButtonSize - AppDelegate.SafeAreaInsets.Bottom, kButtonSize, kButtonSize);
 
             // Place button to the right of hangup button.
             var cameraSwitchFrame = _hangupButton.Frame;
