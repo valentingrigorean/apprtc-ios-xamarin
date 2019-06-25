@@ -50,7 +50,6 @@ namespace AppRTC
         protected string Url { get; }
         protected string RestUrl { get; }
 
-        protected string WebRestFormated => $"{RestUrl}/{RoomId}/{ClientId}";
 
         protected ARDSignalingChannel(string url, string restUrl)
         {

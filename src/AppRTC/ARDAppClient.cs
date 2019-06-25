@@ -87,6 +87,8 @@ namespace AppRTC
 
     public interface IARDAppClientDelegate
     {
+        void DidCreatePeerConnection(RTCPeerConnection peerConnection);
+        void DidOpenDataChannel(RTCDataChannel dataChannel);
         void DidChangeState(ARDAppClientState state);
         void DidChangeConnectionState(RTCIceConnectionState state);
         void DidCreateLocalCapturer(RTCCameraVideoCapturer localCapturer);
@@ -456,15 +458,7 @@ namespace AppRTC
 
             _peerConnection = _factory.PeerConnectionWithConfiguration(config, constraints, this);
 
-            var channelConfig = new RTCDataChannelConfiguration();
-            channelConfig.IsOrdered = true;
-            channelConfig.IsNegotiated = true;
-            channelConfig.MaxRetransmits = 30;
-            channelConfig.MaxRetransmitTimeMs = 3000;
-            channelConfig.StreamId = 1;
-
-
-            var channel = _peerConnection.DataChannelForLabel("test", channelConfig);
+            
 
             CreateMediaSenders();
 

@@ -73,7 +73,6 @@ namespace AppRTC.iOS
             StatsView.Hidden = true;
             AddSubview(StatsView);
 
-
             _routeChangeButton = new UIButton(UIButtonType.Custom);
             _routeChangeButton.BackgroundColor = UIColor.White;
             _routeChangeButton.Layer.CornerRadius = kButtonSize / 2;

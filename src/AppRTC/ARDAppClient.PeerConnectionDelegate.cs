@@ -115,7 +115,8 @@ namespace AppRTC
 
         public void DidOpenDataChannel(RTCPeerConnection peerConnection, RTCDataChannel dataChannel)
         {
-            Console.WriteLine(dataChannel);
+            Console.WriteLine("Did open data channel:{0}", dataChannel);
+            DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidOpenDataChannel(dataChannel));
         }
 
         public void DidSetSessionDescriptionWithError(RTCPeerConnection peerConnection, NSError error)

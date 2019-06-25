@@ -120,5 +120,13 @@ namespace AppRTC.iOS.Broadcast
         public void DidReceiveRemoteVideoTrack(RTCVideoTrack remoteVideoTrack)
         {
         }
+
+        public void DidCreatePeerConnection(RTCPeerConnection peerConnection)
+        {
+        }
+
+        public void DidOpenDataChannel(RTCDataChannel dataChannel)
+        {
+        }
     }
 }

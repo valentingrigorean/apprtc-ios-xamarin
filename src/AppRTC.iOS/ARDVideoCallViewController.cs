@@ -23,9 +23,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-//#define __PUSHER__
+//#define __PUSHER__
 using System;
+#if __PUSHER__
 using AppRTC.Pusher;
+#endif
 using CoreGraphics;
 using Foundation;
 using UIKit;

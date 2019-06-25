@@ -248,7 +248,7 @@ namespace AppRTC
                 // Video track.
                 ParseVideoSendStatsReport(statsReport);
             }
-            else if (values.ContainsKey("audioOutputLevel".ToNative()))
+            else if (values.ContainsKey("audioInputLevel".ToNative()))
             {
                 //audio track
                 ParseAudioSendStatsReport(statsReport);

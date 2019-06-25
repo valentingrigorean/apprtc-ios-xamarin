@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using AppRTC.iOS.Extenstions;
+using CoreGraphics;
 using UIKit;
 using WebRTCBinding;
 
@@ -35,6 +36,17 @@ namespace AppRTC.iOS
         private ARDCaptureController _captureController;
         private ARDFileCaptureController _fileCaptureController;
         private RTCVideoTrack _remoteVideoTrack;
+        private RTCVideoTrack _localVideoTrack;
+
+        public void DidCreatePeerConnection(RTCPeerConnection peerConnection)
+        {
+
+        }
+
+        public void DidOpenDataChannel(RTCDataChannel dataChannel)
+        {
+
+        }
 
         public void DidChangeConnectionState(RTCIceConnectionState state)
         {
@@ -93,12 +105,29 @@ namespace AppRTC.iOS
 
         public void DidReceiveLocalVideoTrack(RTCVideoTrack localVideoTrack)
         {
+            _localVideoTrack = localVideoTrack;
+            if (ObjCRuntime.Runtime.Arch == ObjCRuntime.Arch.SIMULATOR)
+            {
+             
+                var localView = new RTCEAGLVideoView();
+                View.AddSubview(localView);
+
+                var bounds = View.Bounds;
+                var localVideoFrame = new CGRect(0, 0, 100f, 100f);
+                // Place the view in the bottom right.
+                localVideoFrame.Location = new CGPoint(
+                    bounds.GetMaxX() - localVideoFrame.Size.Width - 8, bounds.GetMaxY() - localVideoFrame.Size.Height - 8 - AppDelegate.SafeAreaInsets.Top);
+
+                localView.Frame = localVideoFrame;
+                
+
+                _localVideoTrack.AddRenderer(localView);
+            }
         }
 
         public void DidReceiveRemoteVideoTrack(RTCVideoTrack remoteVideoTrack)
         {
             SetRemoteVideoTrack(remoteVideoTrack);
-            RTCDispatcher.DispatchAsyncOnType(RTCDispatcherQueueType.Main, () => _videoCallView.StatusLabel.Hidden = true);
         }
 
         private string StatusTextForState(RTCIceConnectionState state)
@@ -132,5 +161,7 @@ namespace AppRTC.iOS
             _remoteVideoTrack = remoteVideoTrack;
             _remoteVideoTrack.AddRenderer(_videoCallView.RemoteVideoRender);
         }
+
+        
     }
 }

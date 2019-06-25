@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using AppRTC.Extensions;
@@ -36,7 +37,11 @@ namespace AppRTC
 {
     public class ARDWebSocketClient : ARDSignalingChannel, IDisposable
     {
+
         private WebSocket _socket;
+
+        protected string WebRestFormated => $"{RestUrl}/{RoomId}/{ClientId}";
+
 
         public ARDWebSocketClient(string url, string restUrl, IARDSignalingChannelDelegate @delegate) : base(url, restUrl)
         {
@@ -105,7 +110,7 @@ namespace AppRTC
                     _socket.Send(messageString);
                     break;
                 default:
-                    Debug.WriteLine($"C->WSS:{payload}");
+                    Debug.WriteLine($"C->WSS POST:{payload}");
                     var url = new NSUrl(WebRestFormated);
                     url.SendAsyncPostToURL(data, null);
                     break;
@@ -134,6 +139,7 @@ namespace AppRTC
             _socket.Send(new NSString(message, NSStringEncoding.UTF8));
             State = ARDSignalingChannelState.Registered;
         }
+        
 
         private void Wire(WebSocket socket)
         {

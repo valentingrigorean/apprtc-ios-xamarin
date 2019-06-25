@@ -1,5 +1,5 @@
 ﻿//
-// PusherARDAppClient.cs
+// RCTLog.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -24,18 +24,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace AppRTC.Pusher
-{
-    public static class PusherARDAppClientFactory
-    {
-        public static ARDAppClient Create(IARDAppClientDelegate @delegate,bool isLoopback)
-        {
-            var roomServerClient = new PusherARDRoomServerClient(PusherServerConfig.Default);
+using System.Runtime.InteropServices;
 
-            return ARDAppClient.Create(@delegate: @delegate,
-                channelFactory: new PusherARDSignalingChannelFactory(roomServerClient, isLoopback),
-                //turnClient: new PusherARDTurnClient(),
-                roomServerClient: roomServerClient);
+namespace WebRTCBinding
+{
+    public static class RTCLog
+    {
+        // extern void RTCSetMinDebugLogLevel (RTCLoggingSeverity severity) __attribute__((visibility("default")));
+        [DllImport("__Internal")]
+        static extern void RTCSetMinDebugLogLevel(RTCLoggingSeverity severity);
+
+        public static void SetMinDebugLogLevel(RTCLoggingSeverity severity)
+        {
+            RTCSetMinDebugLogLevel(severity);
+        }
+
+        // extern void RTCLogEx (RTCLoggingSeverity severity, NSString *log_string) __attribute__((visibility("default")));
+        [DllImport("__Internal")]
+        static extern void RTCLogEx(RTCLoggingSeverity severity, string log_string);
+
+        public static void LogEx(RTCLoggingSeverity severity, string message)
+        {
+            RTCLogEx(severity, message);
         }
     }
 }

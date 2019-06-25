@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Foundation;
+﻿using Foundation;
 using UIKit;
 using WebRTCBinding;
 
@@ -26,10 +24,13 @@ namespace AppRTC.iOS
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
 
+            RTCFieldTrials.InitFieldTrialDictionary(new NSDictionary<NSString, NSString>());
             RTCSSLAdapter.RTCInitializeSSL();
             RTCTracking.RTCSetupInternalTracer();
 
-
+#if DEBUG
+            RTCLog.SetMinDebugLogLevel(RTCLoggingSeverity.Warning);
+#endif
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
             Window.MakeKeyAndVisible();
             SafeAreaInsets = Window.SafeAreaInsets;
