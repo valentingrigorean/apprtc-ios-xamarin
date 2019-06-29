@@ -458,7 +458,13 @@ namespace AppRTC
 
             _peerConnection = _factory.PeerConnectionWithConfiguration(config, constraints, this);
 
-            
+            if(_peerConnection == null)
+            {
+                Delegate?.DidError(new ARDAppException("Invalid config:" + config.DebugDescription));
+                return;
+            }
+
+            Delegate?.DidCreatePeerConnection(_peerConnection);
 
             CreateMediaSenders();
 

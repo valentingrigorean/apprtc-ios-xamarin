@@ -1,5 +1,5 @@
 ﻿//
-// PusherMessage.cs
+// TurnClient.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -24,12 +24,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace AppRTC.Pusher
-{
-    public class PusherMessage
-    {
-        public string id { get; set; }
+using System.Threading.Tasks;
+using AppRTC.H113.Models;
+using WebRTCBinding;
 
-        public string message { get; set; }
+namespace AppRTC.H113
+{
+    public class TurnClient : IARDTURNClient
+    {
+        private readonly TaskCompletionSource<RTCIceServer[]> _taskCompletion = new TaskCompletionSource<RTCIceServer[]>();
+        private Halllo _hallo;
+
+        public Halllo Hallo
+        {
+            get => _hallo;
+            set
+            {
+                if(_h
+            }
+        }
+
+        public Task<RTCIceServer[]> RequestServersAsync() => _taskCompletion.Task;       
     }
 }

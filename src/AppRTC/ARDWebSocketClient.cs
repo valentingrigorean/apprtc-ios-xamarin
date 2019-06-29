@@ -218,44 +218,4 @@ namespace AppRTC
             }
         }
     }
-
-    public class ARDLoopbackWebSocketChannel : ARDWebSocketClient, IARDSignalingChannelDelegate
-    {
-
-        public ARDLoopbackWebSocketChannel(string url, string restUrl) : base(url, restUrl, null)
-        {
-            Delegate = this;
-        }
-
-        public void DidChangeState(ARDSignalingChannel channel, ARDSignalingChannelState state)
-        {
-
-        }
-
-        public void DidReceiveMessage(ARDSignalingChannel channel, ARDSignalingMessage message)
-        {
-            switch (message.Type)
-            {
-                case ARDSignalingMessageType.Offer:
-                    var sdpMessage = (ARDSessionDescriptionMessage)message;
-                    var description = sdpMessage.Description;
-                    var dsc = description.Sdp;
-                    dsc = dsc.Replace("offer", "answer");
-                    var answerDescription = new RTCSessionDescription(RTCSdpType.Answer, dsc);
-                    var answer = new ARDSessionDescriptionMessage(answerDescription);
-                    SendMessage(answer);
-                    break;
-                case ARDSignalingMessageType.Answer:
-                    // Should not receive answer in loopback scenario.
-                    break;
-                case ARDSignalingMessageType.Candidate:
-                case ARDSignalingMessageType.CandidateRemoval:
-                    SendMessage(message);
-                    break;
-                case ARDSignalingMessageType.Bye:
-                    // Nothing to do.
-                    break;
-            }
-        }
-    }
 }

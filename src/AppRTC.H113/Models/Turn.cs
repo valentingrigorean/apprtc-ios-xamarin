@@ -1,5 +1,5 @@
 ﻿//
-// DefaultARDSignalingChannelFactory.cs
+// Turn.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -24,18 +24,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace AppRTC
-{
-    public class DefaultARDSignalingChannelFactory : IARDSignalingChannelFactory
-    {
-        public ARDSignalingChannel CreateChannel(string url, string restUrl, IARDSignalingChannelDelegate @delegate)
-        {
-            return new ARDWebSocketClient(url, restUrl, @delegate);
-        }
+using Newtonsoft.Json;
 
-        public ARDSignalingChannel CreateChannelLoopback(string url, string restUrl)
-        {
-            return new ARDSignalingChannelLoopback(@delegate => new ARDWebSocketClient(url, restUrl, @delegate));
-        }
+namespace AppRTC.H113.Models
+{
+    public class Turn
+    {
+        [JsonProperty("urls")]
+        public string Urls { get; set; }
+
+        [JsonProperty("username")]
+        public string Username { get; set; }
+
+        [JsonProperty("credential")]
+        public string Credential { get; set; }
+
+        [JsonProperty("credentialType")]
+        public string CredentialType { get; set; }
     }
 }

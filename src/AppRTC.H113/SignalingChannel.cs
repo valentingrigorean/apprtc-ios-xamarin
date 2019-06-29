@@ -1,5 +1,5 @@
 ﻿//
-// PusherConfig.cs
+// SignalingChannel.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -24,24 +24,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace AppRTC.Pusher
+namespace AppRTC.H113
 {
-
-    public class PusherServerConfig
+    public class SignalingChannel : ARDSignalingChannel
     {
-        public string AppId { get; set; }
-        public string AppKey { get; set; }
-        public string AppSecret { get; set; }
-        public string EventName { get; set; }
-        public PusherServer.PusherOptions Options { get; set; }
-
-        public static PusherServerConfig Default { get; } = new PusherServerConfig
+        public SignalingChannel(string url, string restUrl, IARDSignalingChannelDelegate @delegate) : base(url, restUrl)
         {
-            AppId = "779775",
-            AppKey = "365f4ad6ab354f6e552f",
-            AppSecret = "afd79bdc78121aa043e8",
-            EventName = "message",
-            Options = new PusherServer.PusherOptions { Cluster = "eu" }
-        };
-    }
+            Delegate = @delegate;
+        }
+
+        public override void Disconnect()
+        {
+
+        }
+
+        public override void RegisterForRoomId(string roomId, string clientId)
+        {
+        }
+
+        public override void SendMessage(ARDSignalingMessage message)
+        {
+
+        }
+    }    
 }

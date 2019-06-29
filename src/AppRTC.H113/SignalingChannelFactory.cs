@@ -1,5 +1,5 @@
 ﻿//
-// PusherTurnClient.cs
+// SignalingChannelFactory.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -24,21 +24,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Threading.Tasks;
-using WebRTCBinding;
-
-namespace AppRTC.Pusher
+namespace AppRTC.H113
 {
-    public class PusherARDTurnClient : IARDTURNClient
+    public class SignalingChannelFactory : IARDSignalingChannelFactory
     {
-        public async Task<RTCIceServer[]> RequestServersAsync()
+        public ARDSignalingChannel CreateChannel(string url, string restUrl, IARDSignalingChannelDelegate @delegate)
         {
-            await Task.Delay(500);
-            return new[]
-            {
-                new RTCIceServer(new[]{ "turn: 46.101.100.97:3478 ? transport = udp" }),
-                new RTCIceServer(new []{"stun:46.101.100.97" },"usr1","DooM19888")
-            };
+            return new SignalingChannel(url, restUrl, @delegate);
+        }
+
+        public ARDSignalingChannel CreateChannelLoopback(string url, string restUrl)
+        {
+            throw new NotImplementedException();
         }
     }
 }

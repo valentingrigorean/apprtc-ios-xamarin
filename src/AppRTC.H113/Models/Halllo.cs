@@ -1,5 +1,5 @@
 ﻿//
-// PusherARDAppClient.cs
+// Halllo.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -24,18 +24,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace AppRTC.Pusher
-{
-    public static class PusherARDAppClientFactory
-    {
-        public static ARDAppClient Create(IARDAppClientDelegate @delegate,bool isLoopback)
-        {
-            var roomServerClient = new PusherARDRoomServerClient(PusherServerConfig.Default);
+using Newtonsoft.Json;
 
-            return ARDAppClient.Create(@delegate: @delegate,
-                channelFactory: new PusherARDSignalingChannelFactory(roomServerClient, isLoopback),
-                //turnClient: new PusherARDTurnClient(),
-                roomServerClient: roomServerClient);
-        }
+namespace AppRTC.H113.Models
+{
+    public class Halllo
+    {
+        [JsonProperty("chatUrl")]
+        public string ChatUrl { get; set; }
+
+        [JsonProperty("signalingUrl")]
+        public string SignalingUrl { get; set; }
+
+        [JsonProperty("rtc")]
+        public Rtc Rtc { get; set; }
+
+        [JsonProperty("token")]
+        public string Token { get; set; }
+
+        [JsonProperty("chatWebView")]
+        public string ChatWebView { get; set; }
+
+        [JsonProperty("videoWebView")]
+        public string VideoWebView { get; set; }
     }
 }

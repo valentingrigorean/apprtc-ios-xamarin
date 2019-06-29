@@ -1,5 +1,5 @@
 ﻿//
-// PusherClientConfig.cs
+// ClientFactory.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -24,22 +24,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace AppRTC.Pusher
+namespace AppRTC.H113
 {
-    public class PusherClientConfig
+    public static class ClientFactory
     {
-        public string AppKey { get; set; }
-        public string EventName { get; set; }
-        public PusherClient.PusherOptions Options { get; set; }
-
-        public static PusherClientConfig Default { get; } = new PusherClientConfig
+        public static ARDAppClient Create(IARDAppClientDelegate @delegate)
         {
-            AppKey = "365f4ad6ab354f6e552f",
-            EventName = "message",
-            Options = new PusherClient.PusherOptions
-            {
-                Cluster = "eu"
-            }
-        };
+            var serverClient = new ServerClient("d5e5864a-b1db-4715-9c97-196c37126db0", "12345");
+            return ARDAppClient.Create(@delegate:@delegate,turn
+        }
     }
 }

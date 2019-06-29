@@ -24,6 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+using WebRTCBinding;
+
 namespace AppRTC
 {
     public enum ARDSignalingChannelState
@@ -50,14 +53,13 @@ namespace AppRTC
         protected string Url { get; }
         protected string RestUrl { get; }
 
-
         protected ARDSignalingChannel(string url, string restUrl)
         {
             Url = url;
             RestUrl = restUrl;
         }
 
-        public IARDSignalingChannelDelegate Delegate { get; protected set; }
+        public IARDSignalingChannelDelegate Delegate { get; set; }
 
         public string RoomId { get; protected set; }
         public string ClientId { get; protected set; }
@@ -77,5 +79,60 @@ namespace AppRTC
         public abstract void Disconnect();
         public abstract void RegisterForRoomId(string roomId, string clientId);
         public abstract void SendMessage(ARDSignalingMessage message);
-    }    
+    }
+
+    public class ARDSignalingChannelLoopback : ARDSignalingChannel, IARDSignalingChannelDelegate
+    {
+        private readonly ARDSignalingChannel _channel;
+
+        public ARDSignalingChannelLoopback(Func<IARDSignalingChannelDelegate, ARDSignalingChannel> channelFactory) : base(null, null)
+        {
+            _channel = channelFactory(this);
+        }
+
+        public override void Disconnect()
+        {
+            _channel.Disconnect();
+        }
+
+        public override void RegisterForRoomId(string roomId, string clientId)
+        {
+            _channel.RegisterForRoomId(roomId, clientId);
+        }
+
+        public override void SendMessage(ARDSignalingMessage message)
+        {
+            _channel.SendMessage(message);
+        }
+
+        public void DidChangeState(ARDSignalingChannel channel, ARDSignalingChannelState state)
+        {
+        }
+
+        public void DidReceiveMessage(ARDSignalingChannel channel, ARDSignalingMessage message)
+        {
+            switch (message.Type)
+            {
+                case ARDSignalingMessageType.Offer:
+                    var sdpMessage = (ARDSessionDescriptionMessage)message;
+                    var description = sdpMessage.Description;
+                    var dsc = description.Sdp;
+                    dsc = dsc.Replace("offer", "answer");
+                    var answerDescription = new RTCSessionDescription(RTCSdpType.Answer, dsc);
+                    var answer = new ARDSessionDescriptionMessage(answerDescription);
+                    SendMessage(answer);
+                    break;
+                case ARDSignalingMessageType.Answer:
+                    // Should not receive answer in loopback scenario.
+                    break;
+                case ARDSignalingMessageType.Candidate:
+                case ARDSignalingMessageType.CandidateRemoval:
+                    SendMessage(message);
+                    break;
+                case ARDSignalingMessageType.Bye:
+                    // Nothing to do.
+                    break;
+            }
+        }
+    }
 }

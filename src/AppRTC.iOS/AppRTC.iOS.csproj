@@ -27,6 +27,7 @@
         <MtouchDebug>true</MtouchDebug>
         <CodesignProvision>VS: WildCard Development</CodesignProvision>
         <CodesignKey>iPhone Developer: grierosu alina (DHH46245KZ)</CodesignKey>
+        <MtouchExtraArgs>-v </MtouchExtraArgs>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
         <DebugType>none</DebugType>
@@ -165,10 +166,6 @@
         <IsAppExtension>true</IsAppExtension>
         <Project>{60B6C832-F192-473C-9B98-3A498ADD762B}</Project>
         <Name>AppRTC.iOS.Broadcast</Name>
-      </ProjectReference>
-      <ProjectReference Include="..\AppRTC.Pusher\AppRTC.Pusher.csproj">
-        <Project>{EBC7B566-6C9E-48CF-8105-76AACFDB81F1}</Project>
-        <Name>AppRTC.Pusher</Name>
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>
