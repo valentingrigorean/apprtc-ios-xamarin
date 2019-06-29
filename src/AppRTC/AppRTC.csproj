@@ -84,6 +84,7 @@
     <Compile Include="IARDSignalingChannelFactory.cs" />
     <Compile Include="DefaultARDSignalingChannelFactory.cs" />
     <Compile Include="ARDWebSocketClient.cs" />
+    <Compile Include="SignalingMessageQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebRTCBinding\WebRTCBinding.csproj">

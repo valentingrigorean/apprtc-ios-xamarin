@@ -34,7 +34,7 @@ namespace AppRTC
     {
         public void DidCreateSessionDescription(RTCPeerConnection peerConnection, RTCSessionDescription sdp, NSError error)
         {
-            DispatchQueue.MainQueue.DispatchAsync(() =>
+            DispatchForPeerConnectionAsync(() =>
             {
                 if (error != null)
                 {
@@ -91,7 +91,7 @@ namespace AppRTC
 
         public void DidGenerateIceCandidate(RTCPeerConnection peerConnection, RTCIceCandidate candidate)
         {
-            DispatchQueue.MainQueue.DispatchAsync(() =>
+            DispatchForPeerConnectionAsync(() =>
             {
                 var message = new ARDICECandidateMessage(candidate);
                 SendSignalingMessage(message);
@@ -106,7 +106,7 @@ namespace AppRTC
 
         public void DidRemoveIceCandidates(RTCPeerConnection peerConnection, RTCIceCandidate[] candidates)
         {
-            DispatchQueue.MainQueue.DispatchAsync(() =>
+            DispatchForPeerConnectionAsync(() =>
             {
                 var message = new ARDICECandidateRemovalMessage(candidates);
                 SendSignalingMessage(message);
@@ -121,7 +121,7 @@ namespace AppRTC
 
         public void DidSetSessionDescriptionWithError(RTCPeerConnection peerConnection, NSError error)
         {
-            DispatchQueue.MainQueue.DispatchAsync(() =>
+            DispatchForPeerConnectionAsync(() =>
             {
                 if (error != null)
                 {
@@ -143,5 +143,8 @@ namespace AppRTC
                 }
             });
         }
+
+
+
     }
 }

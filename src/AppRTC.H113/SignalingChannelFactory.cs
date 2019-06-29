@@ -23,19 +23,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 namespace AppRTC.H113
 {
     public class SignalingChannelFactory : IARDSignalingChannelFactory
     {
+        private readonly ServerClient _serverClient;
+
+        public SignalingChannelFactory(ServerClient serverClient)
+        {
+            _serverClient = serverClient;
+        }
+
         public ARDSignalingChannel CreateChannel(string url, string restUrl, IARDSignalingChannelDelegate @delegate)
         {
-            return new SignalingChannel(url, restUrl, @delegate);
+            var channel = new SignalingChannel(url, restUrl, @delegate);
+            _serverClient.SignalingChannel = channel;
+            return channel;
         }
 
         public ARDSignalingChannel CreateChannelLoopback(string url, string restUrl)
         {
-            throw new NotImplementedException();
+            return new ARDSignalingChannelLoopback(@delegate => new SignalingChannel(url, restUrl, @delegate));
         }
     }
 }

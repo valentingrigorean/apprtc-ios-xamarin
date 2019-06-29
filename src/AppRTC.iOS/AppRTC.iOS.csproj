@@ -18,7 +18,7 @@
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
-        <DefineConstants>DEBUG</DefineConstants>
+        <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;__H113__</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <ConsolePause>false</ConsolePause>
@@ -46,7 +46,7 @@
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <OutputPath>bin\iPhone\Debug</OutputPath>
-        <DefineConstants>DEBUG</DefineConstants>
+        <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;__H113__</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <ConsolePause>false</ConsolePause>
@@ -166,6 +166,10 @@
         <IsAppExtension>true</IsAppExtension>
         <Project>{60B6C832-F192-473C-9B98-3A498ADD762B}</Project>
         <Name>AppRTC.iOS.Broadcast</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\AppRTC.H113\AppRTC.H113.csproj">
+        <Project>{D6E074E6-5E6E-4246-9956-7EA3CBA4E092}</Project>
+        <Name>AppRTC.H113</Name>
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>

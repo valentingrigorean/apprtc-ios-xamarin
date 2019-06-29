@@ -1,5 +1,5 @@
 ﻿//
-// TurnClient.cs
+// TurnExtensions.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -24,26 +24,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Threading.Tasks;
 using AppRTC.H113.Models;
 using WebRTCBinding;
 
-namespace AppRTC.H113
+namespace AppRTC.H113.Extenstions
 {
-    public class TurnClient : IARDTURNClient
+    public static class TurnExtensions
     {
-        private readonly TaskCompletionSource<RTCIceServer[]> _taskCompletion = new TaskCompletionSource<RTCIceServer[]>();
-        private Halllo _hallo;
-
-        public Halllo Hallo
+        public static RTCIceServer ToRTCIceServer(this Turn self)
         {
-            get => _hallo;
-            set
-            {
-                if(_h
-            }
-        }
-
-        public Task<RTCIceServer[]> RequestServersAsync() => _taskCompletion.Task;       
+            return new RTCIceServer(new[] { self.Urls }, self.Username, self.Credential);
+        } 
     }
 }

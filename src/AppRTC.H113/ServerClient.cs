@@ -25,6 +25,8 @@
 // THE SOFTWARE.
 using System;
 using System.Threading.Tasks;
+using AppRTC.H113.Extenstions;
+using AppRTC.H113.Models;
 using RestSharp;
 using WebRTCBinding;
 
@@ -34,25 +36,49 @@ namespace AppRTC.H113
     {
         private const string BaseUrl = "https://h113.no";
 
+        private readonly object _lockObject = new object();
+
         private readonly RestClient _client = new RestClient(BaseUrl);
 
-        private readonly string _token;
-        private readonly string _mobileNumber;
+        private readonly SignalingMessageQueue _messageQueue;
 
-        public ServerClient(string token,string mobileNumber)
+        private SignalingChannel _signalingChannel;
+
+        private TaskCompletionSource<int> _joimRoomTask;
+        private TaskCompletionSource<RTCIceServer[]> _turnTask;
+
+
+        public ServerClient(string token)
         {
-            _token = token;
-            _mobileNumber = mobileNumber;
             _client.AddDefaultHeader("Authorization", string.Format("Bearer {0}", token));
+            _messageQueue = new SignalingMessageQueue(() => SignalingChannel != null && SignalingChannel.State == ARDSignalingChannelState.Registered, ProcessSignalingMessage);
         }
 
-        public async Task<ARDJoinResponse> JoinRoomWithRoomIdAsync(string roomId, bool isLoopback)
+        public SignalingChannel SignalingChannel
         {
-            var request = new RestRequest("hallo ");
+            get => _signalingChannel;
+            set
+            {
+                _signalingChannel = value;
+                _messageQueue.DrainMessageQueueIfReady();
+            }
+        }
 
-            var response = await _client.ExecuteGetTaskAsync(request);
-
-            return null;
+        public Task<ARDJoinResponse> JoinRoomWithRoomIdAsync(string roomId, bool isLoopback)
+        {
+            lock (_lockObject)
+            {
+                if (_joimRoomTask == null)
+                    _joimRoomTask = new TaskCompletionSource<int>();
+                _turnTask = new TaskCompletionSource<RTCIceServer[]>();
+            }
+            if (_joimRoomTask.Task.Status != TaskStatus.RanToCompletion)
+                _joimRoomTask.SetResult(0);
+            lock (_lockObject)
+            {
+                _joimRoomTask = null;
+            }
+            return JoinRoomWithRoomIdInternalAsync(roomId, isLoopback);
         }
 
         public Task<bool> LeaveRoomWithRoomIdAsync(string roomId, string clientId)
@@ -63,14 +89,88 @@ namespace AppRTC.H113
 
         public Task<ARDMessageResponse> SendMessageAsync(ARDSignalingMessage message, string roomId, string clientId)
         {
-            throw new NotImplementedException();
+            _messageQueue.Add(message);
+            _messageQueue.DrainMessageQueueIfReady();
+
+            return Task.FromResult(new ARDMessageResponse
+            {
+                Type = ARDMessageResultType.Success
+            });
         }
 
-        public Task<RTCIceServer[]> RequestServersAsync()
+        public async Task<RTCIceServer[]> RequestServersAsync()
         {
-            throw new NotImplementedException();
+            Task task;
+            lock (_lockObject)
+            {
+                if (_joimRoomTask == null)
+                    _joimRoomTask = new TaskCompletionSource<int>();
+                task = _joimRoomTask.Task;
+            }
+            await task;
+            var results = await _turnTask.Task;
+            lock (_lockObject)
+            {
+                _turnTask = null;
+            }
+            return results;
         }
 
-        
+        private void ProcessSignalingMessage(ARDSignalingMessage message)
+        {
+            SignalingChannel.SendMessage(message);
+        }
+
+        private async Task<ARDJoinResponse> JoinRoomWithRoomIdInternalAsync(string roomId, bool isLoopback)
+        {
+            var request = new RestRequest("hallo ");
+
+            var response = await _client.ExecuteGetTaskAsync<Halllo>(request);
+            if (!response.IsSuccessful)
+            {
+                _turnTask.SetResult(new RTCIceServer[0]);
+                _joimRoomTask = null;
+                throw new ApplicationException("Error retrieving response.  Check inner details for more info.", response.ErrorException);
+            }
+
+            var hallo = response.Data;
+            ParseIceServers(hallo);
+
+            var wsUrl = GetWSUrl(hallo.SignalingUrl);
+
+            TokenInfo.Current = new TokenInfo(hallo.Token);
+
+            return new ARDJoinResponse
+            {
+                Result = ARDJoinResultType.Success,
+                ServerParams = new ServerParams
+                {
+                    wss_url = wsUrl,
+                    wss_post_url = hallo.SignalingUrl,
+                    client_id = hallo.Token,
+                    is_initiator = true,
+                    is_loopback = isLoopback
+                }
+            };
+        }
+
+        private void ParseIceServers(Halllo halllo)
+        {
+            _turnTask.SetResult(halllo.Rtc.GetRTCIceServers());
+        }
+
+        private static string GetWSUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                return "";
+            if (url.StartsWith("http", StringComparison.Ordinal))
+            {
+                var pos = url.IndexOf("://", StringComparison.Ordinal);
+                if (pos >= 0)
+                    return "wss://" + url.Substring(pos + 3);
+                return url;
+            }
+            return url;
+        }
     }
 }

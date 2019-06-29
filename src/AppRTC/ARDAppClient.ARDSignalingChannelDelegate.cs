@@ -45,23 +45,8 @@ namespace AppRTC
 
         public void DidReceiveMessage(ARDSignalingChannel channel, ARDSignalingMessage message)
         {
-            switch (message.Type)
-            {
-                case ARDSignalingMessageType.Candidate:
-                case ARDSignalingMessageType.CandidateRemoval:
-                    _messageQueue.Add(message);
-                    break;
-                case ARDSignalingMessageType.Offer:
-                case ARDSignalingMessageType.Answer:
-                    _hasReceivedSdp = true;
-                    _messageQueue.Insert(0, message);
-                    break;
-                case ARDSignalingMessageType.Bye:
-                    ProcessSignalingMessage(message);
-                    break;
-            }
-
-            DrainMessageQueueIfReady();
+            _messageQueue.Add(message);
+            _messageQueue.DrainMessageQueueIfReady();
         }
     }
 }

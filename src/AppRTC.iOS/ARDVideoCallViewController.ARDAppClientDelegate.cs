@@ -94,6 +94,8 @@ namespace AppRTC.iOS
 
         public void DidError(ARDAppException error)
         {
+            Console.WriteLine(error);
+           
             this.ShowAlertWithMessage(error.Message, Hangup);
         }
 

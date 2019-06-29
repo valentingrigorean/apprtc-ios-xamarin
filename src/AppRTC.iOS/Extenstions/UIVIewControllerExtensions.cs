@@ -32,6 +32,11 @@ namespace AppRTC.iOS.Extenstions
     {
         public static void ShowAlertWithMessage(this UIViewController self, string message, Action handler = null)
         {
+            if (self.PresentedViewController != null)
+            {
+                Console.WriteLine("Already presenting a ViewController:{0}", self.PresentedViewController);
+                return;
+            }
             var alert = UIAlertController.Create("", message, UIAlertControllerStyle.Alert);
             var defaultAction = UIAlertAction.Create("OK", UIAlertActionStyle.Default, (_) => handler?.Invoke());
 

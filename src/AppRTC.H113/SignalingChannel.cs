@@ -24,27 +24,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
+using AppRTC.Extensions;
+using Foundation;
+using Square.SocketRocket;
+
 namespace AppRTC.H113
 {
-    public class SignalingChannel : ARDSignalingChannel
+    public class SignalingChannel : ARDWebSocketClient
     {
-        public SignalingChannel(string url, string restUrl, IARDSignalingChannelDelegate @delegate) : base(url, restUrl)
-        {
-            Delegate = @delegate;
-        }
-
-        public override void Disconnect()
-        {
-
-        }
-
-        public override void RegisterForRoomId(string roomId, string clientId)
+        public SignalingChannel(string url, string restUrl, IARDSignalingChannelDelegate @delegate) : base(url, restUrl, @delegate)
         {
         }
+
 
         public override void SendMessage(ARDSignalingMessage message)
         {
+            // base.SendMessage(message);
 
         }
-    }    
+
+        protected override WebSocket CreateSocket(string url)
+        {
+            var request = new NSMutableUrlRequest(new NSUrl(url))
+            {
+                Headers = new Dictionary<string, string>
+                {
+                    ["Origin"] = "https://h113.no",
+                    ["Sec-WebSocket-Protocol"] = TokenInfo.Current.Token
+                }.ToNative()
+            };
+            return new WebSocket(request);
+        }
+
+        protected override void OnReceivedMessage(string message)
+        {
+            // base.OnReceivedMessage(message);
+            Console.WriteLine(message);
+        }
+
+        protected override void RegisterWithCollider()
+        {
+            State = ARDSignalingChannelState.Registered;
+        }
+    }
 }

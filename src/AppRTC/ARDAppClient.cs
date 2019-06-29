@@ -107,6 +107,10 @@ namespace AppRTC
         public long AecDumpMaxSizeInBytes { get; set; } = 0x5e6;
         public long RtcEventLogMaxSizeInBytes { get; set; } = 0x5e6;
 
+        public RTCMediaConstraints PeerConnectionConstraints { get; set; }
+        public RTCMediaConstraints OfferConstraints { get; set; }
+        public RTCMediaConstraints AnswerConstraints { get; set; }
+
         public string MediaStreamId { get; set; } = "ARDAMS";
         public string AudioTrackId { get; set; } = @"ARDAMSa0";
         public string VideoTrackId { get; set; } = @"ARDAMSv0";
@@ -121,9 +125,10 @@ namespace AppRTC
 
         private readonly IARDRoomServerClient _roomServerClient;
 
-        private readonly List<ARDSignalingMessage> _messageQueue = new List<ARDSignalingMessage>();
+        private readonly SignalingMessageQueue _messageQueue;
 
         private readonly ARDAppClientConfig _config;
+
         private readonly IARDSignalingChannelFactory _channelFactory;
 
         private ARDSettingsModel _settings;
@@ -139,7 +144,6 @@ namespace AppRTC
         private bool _isInitiator;
         private string _roomId;
         private string _cliendId;
-        private bool _hasReceivedSdp;
         private string _webSocketUrl;
         private string _webSocketRestUrl;
 
@@ -159,6 +163,9 @@ namespace AppRTC
         {
             get
             {
+                if (_config.PeerConnectionConstraints != null)
+                    return _config.PeerConnectionConstraints;
+
                 var value = _isLoopback ? "false" : "true";
                 var optionalConstraints = new Dictionary<string, string>
                 {
@@ -173,6 +180,9 @@ namespace AppRTC
         {
             get
             {
+                if (_config.OfferConstraints != null)
+                    return _config.OfferConstraints;
+
                 var mandatoryConstraints = new Dictionary<string, string>
                 {
                     ["OfferToReceiveAudio"] = "true",
@@ -183,7 +193,7 @@ namespace AppRTC
             }
         }
 
-        private RTCMediaConstraints DefaultAnswerConstraints => DefaultOfferConstraints;
+        private RTCMediaConstraints DefaultAnswerConstraints => _config.AnswerConstraints ?? DefaultAnswerConstraints;
 
 
         private ARDAppClient(ARDAppClientConfig config, IARDAppClientDelegate @delegate, IARDSignalingChannelFactory channelFactory, IARDTURNClient turnClient, IARDRoomServerClient roomServerClient)
@@ -198,6 +208,8 @@ namespace AppRTC
             _fileLogger.Start();
 
             Delegate = @delegate;
+
+            _messageQueue = new SignalingMessageQueue(() => _peerConnection != null, ProcessSignalingMessage);
         }
 
 
@@ -259,7 +271,7 @@ namespace AppRTC
 
         private void OnTimerEvent(object sender, ElapsedEventArgs e)
         {
-            _peerConnection.StatsForTrack(null, RTCStatsOutputLevel.Debug, (stats) => DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidGetStats(stats)));
+            _peerConnection?.StatsForTrack(null, RTCStatsOutputLevel.Debug, (stats) => DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidGetStats(stats)));
         }
 
         public void ConnectToRoomWithId(string roomId, ARDSettingsModel settings, bool isLoopback)
@@ -324,20 +336,7 @@ namespace AppRTC
 
                     var messages = response.GetMessages();
 
-                    foreach (var message in messages)
-                    {
-                        switch (message.Type)
-                        {
-                            case ARDSignalingMessageType.Answer:
-                            case ARDSignalingMessageType.Offer:
-                                _hasReceivedSdp = true;
-                                _messageQueue.Insert(0, message);
-                                break;
-                            default:
-                                _messageQueue.Add(message);
-                                break;
-                        }
-                    }
+                    _messageQueue.AddRange(messages);
 
                     _webSocketUrl = serverProps.wss_url;
                     _webSocketRestUrl = serverProps.wss_post_url;
@@ -393,7 +392,6 @@ namespace AppRTC
             _cliendId = null;
             _roomId = null;
             _isInitiator = false;
-            _hasReceivedSdp = false;
             _messageQueue.Clear();
 
             _factory?.StopAecDump();
@@ -458,7 +456,7 @@ namespace AppRTC
 
             _peerConnection = _factory.PeerConnectionWithConfiguration(config, constraints, this);
 
-            if(_peerConnection == null)
+            if (_peerConnection == null)
             {
                 Delegate?.DidError(new ARDAppException("Invalid config:" + config.DebugDescription));
                 return;
@@ -477,7 +475,7 @@ namespace AppRTC
             }
             else
             {
-                DrainMessageQueueIfReady();
+                _messageQueue.DrainMessageQueueIfReady();
             }
 
             if (_config.RtcEventLog)
@@ -563,15 +561,6 @@ namespace AppRTC
             }
         }
 
-        private void DrainMessageQueueIfReady()
-        {
-            if (_peerConnection == null || !_hasReceivedSdp)
-                return;
-            foreach (var msg in _messageQueue)
-                ProcessSignalingMessage(msg);
-
-            _messageQueue.Clear();
-        }
 
         private void CreateMediaSenders()
         {
@@ -667,7 +656,17 @@ namespace AppRTC
             sender.Parameters = parametersToModity;
         }
 
-
+        private void DispatchForPeerConnectionAsync(Action action)
+        {
+            DispatchQueue.MainQueue.DispatchAsync(() =>
+            {
+                if (State == ARDAppClientState.Disconnected || _peerConnection == null)
+                {
+                    return;
+                }
+                action();
+            });
+        }
 
         private static ARDAppException ErrorForJoinResultType(ARDJoinResultType resultType)
         {
@@ -704,7 +703,5 @@ namespace AppRTC
 
             return Path.Combine(documents, fileName);
         }
-
     }
-
 }

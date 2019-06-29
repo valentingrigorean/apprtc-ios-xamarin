@@ -1,5 +1,5 @@
 ﻿//
-// ClientFactory.cs
+// Token.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -26,12 +26,15 @@
 using System;
 namespace AppRTC.H113
 {
-    public static class ClientFactory
+    public class TokenInfo
     {
-        public static ARDAppClient Create(IARDAppClientDelegate @delegate)
+        public TokenInfo(string token)
         {
-            var serverClient = new ServerClient("d5e5864a-b1db-4715-9c97-196c37126db0");
-            return ARDAppClient.Create(null, @delegate, new SignalingChannelFactory(serverClient), serverClient, serverClient);
+            Token = token;
         }
+
+        public string Token { get; }
+
+        public static TokenInfo Current { get; set; }
     }
 }

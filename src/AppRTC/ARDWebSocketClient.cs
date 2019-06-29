@@ -24,32 +24,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using AppRTC.Extensions;
 using Foundation;
 using Newtonsoft.Json;
 using Square.SocketRocket;
-using WebRTCBinding;
 
 namespace AppRTC
 {
     public class ARDWebSocketClient : ARDSignalingChannel, IDisposable
     {
-
         private WebSocket _socket;
 
         protected string WebRestFormated => $"{RestUrl}/{RoomId}/{ClientId}";
 
-
         public ARDWebSocketClient(string url, string restUrl, IARDSignalingChannelDelegate @delegate) : base(url, restUrl)
         {
             Delegate = @delegate;
-            _socket = new WebSocket(new NSUrl(url));
-            Wire(_socket);
-            Console.WriteLine("Opening WebSocket.");
-            _socket.Open();
+            Initialize();
         }
 
         public void Dispose()
@@ -118,7 +111,12 @@ namespace AppRTC
 
         }
 
-        private void RegisterWithCollider()
+        protected virtual WebSocket CreateSocket(string url)
+        {
+            return new WebSocket(new NSUrl(url));
+        }
+
+        protected virtual void RegisterWithCollider()
         {
             if (State == ARDSignalingChannelState.Registered)
             {
@@ -139,7 +137,32 @@ namespace AppRTC
             _socket.Send(new NSString(message, NSStringEncoding.UTF8));
             State = ARDSignalingChannelState.Registered;
         }
-        
+
+        protected virtual void OnReceivedMessage(string message)
+        {
+            SocketResponse socketResponse;
+            try
+            {
+                socketResponse = JsonConvert.DeserializeObject<SocketResponse>(message);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Invalid json error: {ex.Message} message:{message}");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(socketResponse.error))
+            {
+                Debug.WriteLine($"WSS error: {socketResponse.error}");
+                return;
+            }
+
+            var payload = ARDSignalingMessage.MessageFromJSONString(socketResponse.msg);
+            Debug.WriteLine($"WSS->C: {payload}");
+
+            Delegate?.DidReceiveMessage(this, payload);
+        }
+
 
         private void Wire(WebSocket socket)
         {
@@ -167,27 +190,7 @@ namespace AppRTC
         private void WebSocketDidReceiveMessage(object sender, WebSocketReceivedMessageEventArgs e)
         {
             var message = e.Message;
-            SocketResponse socketResponse;
-            try
-            {
-                socketResponse = JsonConvert.DeserializeObject<SocketResponse>(message?.ToString());
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Invalid json error: {ex.Message} message:{message}");
-                return;
-            }
-
-            if (!string.IsNullOrEmpty(socketResponse.error))
-            {
-                Debug.WriteLine($"WSS error: {socketResponse.error}");
-                return;
-            }
-
-            var payload = ARDSignalingMessage.MessageFromJSONString(socketResponse.msg);
-            Debug.WriteLine($"WSS->C: {payload}");
-
-            Delegate?.DidReceiveMessage(this, payload);
+            OnReceivedMessage(message?.ToString());
         }
 
         private void WebSocketDidFailWithError(object sender, WebSocketFailedEventArgs e)
@@ -201,6 +204,14 @@ namespace AppRTC
             Debug.WriteLine($"WebSocket closed with code: {e.Code} reason:{e.Reason} wasClean:{e.WasClean}");
             Contract.Requires(State != ARDSignalingChannelState.Error);
             State = ARDSignalingChannelState.Closed;
+        }
+
+        private void Initialize()
+        {
+            _socket = CreateSocket(Url);
+            Wire(_socket);
+            Console.WriteLine("Opening WebSocket.");
+            _socket.Open();
         }
 
         private class SocketResponse

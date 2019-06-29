@@ -127,6 +127,9 @@ namespace AppRTC.iOS
 
         public void OnStartCall(ARDMainView mainView, string room, bool isLoopback)
         {
+#if __H113__
+            room = "12345";
+#else
             if (string.IsNullOrWhiteSpace(room))
             {
                 if (isLoopback)
@@ -139,7 +142,7 @@ namespace AppRTC.iOS
                     return;
                 }
             }
-
+#endif
             room = room.Trim();
 
 
