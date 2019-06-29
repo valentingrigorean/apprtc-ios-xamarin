@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using AppRTC.Extensions;
 using Foundation;
 using Square.SocketRocket;
@@ -37,11 +38,26 @@ namespace AppRTC.H113
         {
         }
 
+        public event EventHandler OnSocketOpen;
 
         public override void SendMessage(ARDSignalingMessage message)
         {
-            // base.SendMessage(message);
+            Contract.Requires(!string.IsNullOrEmpty(RoomId));
+            Contract.Requires(State == ARDSignalingChannelState.Registered);
 
+            var data = message.JsonData;
+            var payload = data != null ? new NSString(data, NSStringEncoding.UTF8) : new NSString("{}");
+            var messageDict = new NSDictionary(
+                         "cmd", "send",
+                         "msg", payload);
+
+            var messageJSON = NSJsonSerialization.Serialize(
+                messageDict, NSJsonWritingOptions.PrettyPrinted, out NSError err);
+
+            var messageString = new NSString(
+                messageJSON, NSStringEncoding.UTF8);
+
+            SendMessage(messageString);
         }
 
         protected override WebSocket CreateSocket(string url)
@@ -66,6 +82,7 @@ namespace AppRTC.H113
         protected override void RegisterWithCollider()
         {
             State = ARDSignalingChannelState.Registered;
+            OnSocketOpen?.Invoke(this, EventArgs.Empty);
         }
     }
 }

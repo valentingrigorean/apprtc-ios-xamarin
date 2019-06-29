@@ -193,7 +193,7 @@ namespace AppRTC
             }
         }
 
-        private RTCMediaConstraints DefaultAnswerConstraints => _config.AnswerConstraints ?? DefaultAnswerConstraints;
+        private RTCMediaConstraints DefaultAnswerConstraints => _config.AnswerConstraints ?? DefaultOfferConstraints;
 
 
         private ARDAppClient(ARDAppClientConfig config, IARDAppClientDelegate @delegate, IARDSignalingChannelFactory channelFactory, IARDTURNClient turnClient, IARDRoomServerClient roomServerClient)
@@ -209,7 +209,7 @@ namespace AppRTC
 
             Delegate = @delegate;
 
-            _messageQueue = new SignalingMessageQueue(() => _peerConnection != null, ProcessSignalingMessage);
+            _messageQueue = new SignalingMessageQueue(() => _peerConnection != null, ProcessSignalingMessage, "ARDAppClient");
         }
 
 

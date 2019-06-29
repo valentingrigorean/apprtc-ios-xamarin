@@ -25,17 +25,22 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Open.Collections.Synchronized;
 
 namespace AppRTC
 {
     public class SignalingMessageQueue
     {
-        private readonly List<ARDSignalingMessage> _messageQueue = new List<ARDSignalingMessage>();
+        private readonly string _tag;
+        private readonly ReadWriteSynchronizedList<ARDSignalingMessage> _messageQueue = new ReadWriteSynchronizedList<ARDSignalingMessage>();
         private readonly Func<bool> _drainMessageQueueIfReady;
         private readonly Action<ARDSignalingMessage> _processSignalingMessage;
 
-        public SignalingMessageQueue(Func<bool> drainMessageQueueIfReady, Action<ARDSignalingMessage> processSignalingMessage)
+
+        public SignalingMessageQueue(Func<bool> drainMessageQueueIfReady, Action<ARDSignalingMessage> processSignalingMessage, string tag = "")
         {
+            _tag = tag;
             _drainMessageQueueIfReady = drainMessageQueueIfReady;
             _processSignalingMessage = processSignalingMessage;
         }
@@ -46,22 +51,7 @@ namespace AppRTC
 
         public void Add(ARDSignalingMessage message)
         {
-            switch (message.Type)
-            {
-                case ARDSignalingMessageType.Candidate:
-                case ARDSignalingMessageType.CandidateRemoval:
-                    _messageQueue.Add(message);
-                    break;
-                case ARDSignalingMessageType.Offer:
-                case ARDSignalingMessageType.Answer:
-                    HasReceivedSdp = true;
-                    _messageQueue.Insert(0, message);
-                    break;
-                case ARDSignalingMessageType.Bye:
-                    ProcessSignalingMessage(message);
-                    break;
-            }
-
+            AddInternal(message);
             DrainMessageQueueIfReady();
         }
 
@@ -69,7 +59,9 @@ namespace AppRTC
         public void AddRange(IEnumerable<ARDSignalingMessage> messages)
         {
             foreach (var message in messages)
-                Add(message);
+                AddInternal(message);
+
+            DrainMessageQueueIfReady();
         }
 
         public void Clear()
@@ -77,16 +69,33 @@ namespace AppRTC
             _messageQueue.Clear();
         }
 
-        public void ProcessSignalingMessage(ARDSignalingMessage message) => _processSignalingMessage(message);
 
         public void DrainMessageQueueIfReady()
         {
-            if (!_drainMessageQueueIfReady() && !HasReceivedSdp)
+            var result = _drainMessageQueueIfReady();
+            if (!result || !HasReceivedSdp)
                 return;
-            foreach (var msg in _messageQueue)
-                ProcessSignalingMessage(msg);
+            Console.WriteLine("DrainMessageQueue for {0} messages count:{1}", _tag, _messageQueue.Count);
 
+            _messageQueue.ForEach(_processSignalingMessage);            
             _messageQueue.Clear();
+        }
+
+
+        private void AddInternal(ARDSignalingMessage message)
+        {
+            switch (message.Type)
+            {
+                case ARDSignalingMessageType.Answer:
+                case ARDSignalingMessageType.Offer:
+                    HasReceivedSdp = true;
+                    _messageQueue.Insert(0, message);
+                    break;
+                default:
+                    _messageQueue.Add(message);
+                    break;
+            }
+
         }
     }
 }

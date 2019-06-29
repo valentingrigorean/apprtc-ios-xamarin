@@ -98,6 +98,12 @@ namespace AppRTC
         {
             return JsonData.ToNSString();
         }
+
+        public string ToStringPrettyPrinted()
+        {
+            var obj = new { type = Type.ToString(), message = JsonData.ToString() };
+            return JsonConvert.SerializeObject(obj, Formatting.Indented);
+        }
     }
 
     public class ARDICECandidateMessage : ARDSignalingMessage

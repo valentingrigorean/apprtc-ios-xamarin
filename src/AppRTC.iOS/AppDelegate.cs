@@ -28,9 +28,9 @@ namespace AppRTC.iOS
             RTCSSLAdapter.RTCInitializeSSL();
             RTCTracking.RTCSetupInternalTracer();
 
-#if DEBUG
-            RTCLog.SetMinDebugLogLevel(RTCLoggingSeverity.Warning);
-#endif
+//#if DEBUG
+//            RTCLog.SetMinDebugLogLevel(RTCLoggingSeverity.Error);
+//#endif
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
             Window.MakeKeyAndVisible();
             SafeAreaInsets = Window.SafeAreaInsets;

@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using AppRTC.H113.Extenstions;
 using AppRTC.H113.Models;
@@ -51,7 +52,7 @@ namespace AppRTC.H113
         public ServerClient(string token)
         {
             _client.AddDefaultHeader("Authorization", string.Format("Bearer {0}", token));
-            _messageQueue = new SignalingMessageQueue(() => SignalingChannel != null && SignalingChannel.State == ARDSignalingChannelState.Registered, ProcessSignalingMessage);
+            _messageQueue = new SignalingMessageQueue(() => SignalingChannel != null && SignalingChannel.State == ARDSignalingChannelState.Registered, ProcessSignalingMessage, "ServerClient");
         }
 
         public SignalingChannel SignalingChannel
@@ -59,13 +60,17 @@ namespace AppRTC.H113
             get => _signalingChannel;
             set
             {
+                if (_signalingChannel != null)
+                    _signalingChannel.OnSocketOpen -= OnSocketOpen;
                 _signalingChannel = value;
+                _signalingChannel.OnSocketOpen += OnSocketOpen;
                 _messageQueue.DrainMessageQueueIfReady();
             }
         }
 
         public Task<ARDJoinResponse> JoinRoomWithRoomIdAsync(string roomId, bool isLoopback)
         {
+            Console.WriteLine("Joining room:{0} on room server.", roomId);
             lock (_lockObject)
             {
                 if (_joimRoomTask == null)
@@ -89,8 +94,9 @@ namespace AppRTC.H113
 
         public Task<ARDMessageResponse> SendMessageAsync(ARDSignalingMessage message, string roomId, string clientId)
         {
+            Debug.WriteLine($"C->WWS POST: { message.ToStringPrettyPrinted()}");
+
             _messageQueue.Add(message);
-            _messageQueue.DrainMessageQueueIfReady();
 
             return Task.FromResult(new ARDMessageResponse
             {
@@ -113,7 +119,13 @@ namespace AppRTC.H113
             {
                 _turnTask = null;
             }
+            Console.WriteLine("TURN SERVER:{0}", results.Length);
             return results;
+        }
+
+        private void OnSocketOpen(object sender, EventArgs e)
+        {
+            _messageQueue.DrainMessageQueueIfReady();
         }
 
         private void ProcessSignalingMessage(ARDSignalingMessage message)
@@ -123,6 +135,8 @@ namespace AppRTC.H113
 
         private async Task<ARDJoinResponse> JoinRoomWithRoomIdInternalAsync(string roomId, bool isLoopback)
         {
+
+
             var request = new RestRequest("hallo ");
 
             var response = await _client.ExecuteGetTaskAsync<Halllo>(request);

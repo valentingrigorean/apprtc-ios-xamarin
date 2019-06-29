@@ -98,9 +98,7 @@ namespace AppRTC
 
                     var messageString = new NSString(
                         messageJSON, NSStringEncoding.UTF8);
-
-                    Debug.WriteLine($"C->WSS:{messageString}");
-                    _socket.Send(messageString);
+                    SendMessage(messageString);
                     break;
                 default:
                     Debug.WriteLine($"C->WSS POST:{payload}");
@@ -108,7 +106,17 @@ namespace AppRTC
                     url.SendAsyncPostToURL(data, null);
                     break;
             }
+        }
 
+        protected void SendMessage(string message)
+        {
+            SendMessage(new NSString(message, NSStringEncoding.UTF8));
+        }
+
+        protected void SendMessage(NSString message)
+        {
+            Debug.WriteLine($"C->WSS:{message}");
+            _socket.Send(message);
         }
 
         protected virtual WebSocket CreateSocket(string url)

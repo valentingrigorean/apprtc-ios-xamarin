@@ -18,7 +18,7 @@
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
-        <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;__H113__</DefineConstants>
+        <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <ConsolePause>false</ConsolePause>
