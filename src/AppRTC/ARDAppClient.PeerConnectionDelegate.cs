@@ -58,6 +58,32 @@ namespace AppRTC
             });
         }
 
+        public void DidSetSessionDescriptionWithError(RTCPeerConnection peerConnection, NSError error)
+        {
+            DispatchForPeerConnectionAsync(() =>
+            {
+                if (error != null)
+                {
+                    Console.WriteLine("Failed to set session description. Error: {0}", error);
+                    Disconnect();
+
+                    Delegate?.DidError(new ARDAppException("Failed to set session description.", kARDAppClientErrorDomain, ARDAppErrorCode.SetSDP));
+                    return;
+                }
+                // If we're answering and we've just set the remote offer we need to create
+                // an answer and set the local description.
+                if (!_isInitiator && _peerConnection.LocalDescription == null)
+                {
+                    var constraints = DefaultAnswerConstraints;
+                    _peerConnection.AnswerForConstraints(constraints, (sdp, err) =>
+                    {
+                        DidCreateSessionDescription(peerConnection, sdp, err);
+                    });
+                }
+            });
+        }
+
+
         public void DidChangeSignalingState(RTCPeerConnection peerConnection, RTCSignalingState stateChanged)
         {
             Console.WriteLine("Signaling state changed:{0} ({1})", stateChanged, (int)stateChanged);
@@ -118,33 +144,5 @@ namespace AppRTC
             Console.WriteLine("Did open data channel:{0}", dataChannel);
             DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidOpenDataChannel(dataChannel));
         }
-
-        public void DidSetSessionDescriptionWithError(RTCPeerConnection peerConnection, NSError error)
-        {
-            DispatchForPeerConnectionAsync(() =>
-            {
-                if (error != null)
-                {
-                    Console.WriteLine("Failed to set session description. Error: {0}", error);
-                    Disconnect();
-
-                    Delegate?.DidError(new ARDAppException("Failed to set session description.", kARDAppClientErrorDomain, ARDAppErrorCode.SetSDP));
-                    return;
-                }
-                // If we're answering and we've just set the remote offer we need to create
-                // an answer and set the local description.
-                if (!_isInitiator && _peerConnection.LocalDescription == null)
-                {
-                    var constraints = DefaultAnswerConstraints;
-                    _peerConnection.AnswerForConstraints(constraints, (sdp, err) =>
-                    {
-                        DidCreateSessionDescription(peerConnection, sdp, err);
-                    });
-                }
-            });
-        }
-
-
-
     }
 }

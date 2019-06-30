@@ -1,5 +1,5 @@
 ﻿//
-// ClientFactory.cs
+// SignalingMessage.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -24,25 +24,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
-namespace AppRTC.H113
+namespace AppRTC.H113.Models
 {
-    public static class ClientFactory
+    public class SignalingMessage
     {
-        public static ARDAppClient Create(IARDAppClientDelegate @delegate)
-        {
-            var serverClient = new ServerClient("d5e5864a-b1db-4715-9c97-196c37126db0", "90375387");
-            return ARDAppClient.Create(new ARDAppClientConfig { JoinRoomOrder = JoinRoomOrder }, @delegate, new SignalingChannelFactory(serverClient), serverClient, serverClient);
-        }
+        [JsonProperty("from")]
+        public string From { get; set; }
 
-        private static void JoinRoomOrder(Func<Task> turnTask, Func<Task> clientTask)
-        {
-            Task.Run(async () =>
-            {
-                await clientTask();
-                await turnTask();
-            });
-        }
+        [JsonProperty("type")]
+        public string Type { get; set; }
+
+        [JsonProperty("value")]
+        public string Value { get; set; }
     }
 }

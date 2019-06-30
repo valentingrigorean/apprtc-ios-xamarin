@@ -63,6 +63,8 @@
     <Compile Include="Extenstions\TurnExtensions.cs" />
     <Compile Include="Extenstions\RtcExtensions.cs" />
     <Compile Include="Token.cs" />
+    <Compile Include="Models\SignalingMessage.cs" />
+    <Compile Include="Extenstions\SignalingMessageExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AppRTC\AppRTC.csproj">

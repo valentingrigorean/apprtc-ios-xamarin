@@ -102,6 +102,15 @@ namespace AppRTC
 
     public class ARDAppClientConfig
     {
+
+        public ARDAppClientConfig()
+        {
+            JoinRoomOrder = async (turnTask, clientTask) =>
+            {
+                await Task.WhenAll(turnTask(), clientTask());
+            };
+        }
+
         public bool EnableTracing { get; set; } = true;
         public bool RtcEventLog { get; set; } = true;
         public long AecDumpMaxSizeInBytes { get; set; } = 0x5e6;
@@ -110,6 +119,10 @@ namespace AppRTC
         public RTCMediaConstraints PeerConnectionConstraints { get; set; }
         public RTCMediaConstraints OfferConstraints { get; set; }
         public RTCMediaConstraints AnswerConstraints { get; set; }
+
+        public delegate void JoinRoomOrderCallback(Func<Task> turnTask, Func<Task> clientTask);
+
+        public JoinRoomOrderCallback JoinRoomOrder { get; set; }
 
         public string MediaStreamId { get; set; } = "ARDAMS";
         public string AudioTrackId { get; set; } = @"ARDAMSa0";
@@ -295,66 +308,7 @@ namespace AppRTC
                 RTCTracking.RTCStartInternalCapture(filePath);
             }
 
-            Task.Run(async () =>
-            {
-                RTCIceServer[] iceServers = new RTCIceServer[0];
-                try
-                {
-                    iceServers = await _turnClient.RequestServersAsync();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error retrieving TURN servers: {0}", ex);
-                }
-
-                _iceServers.Clear();
-                _iceServers.AddRange(iceServers);
-                _isTurnComplete = true;
-                DispatchQueue.MainQueue.DispatchAsync(StartSignalingIfReady);
-            });
-
-            Task.Run(async () =>
-            {
-                try
-                {
-                    var response = await _roomServerClient.JoinRoomWithRoomIdAsync(roomId, isLoopback);
-
-                    var joinError = ErrorForJoinResultType(response.Result);
-                    if (joinError != null)
-                    {
-                        Console.WriteLine("Failed to join room:{0} on room server.", roomId);
-                        DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidError(joinError));
-                        return;
-                    }
-
-                    var serverProps = response.ServerParams;
-
-                    Console.WriteLine("Joined room:{0} on room server.", roomId);
-                    _roomId = serverProps.room_id;
-                    _cliendId = serverProps.client_id;
-                    _isInitiator = serverProps.is_initiator;
-
-                    var messages = response.GetMessages();
-
-                    _messageQueue.AddRange(messages);
-
-                    _webSocketUrl = serverProps.wss_url;
-                    _webSocketRestUrl = serverProps.wss_post_url;
-
-                    DispatchQueue.MainQueue.DispatchAsync(() =>
-                    {
-                        RegisterWithColliderIfReady();
-                        StartSignalingIfReady();
-                    });
-
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Failed to join room:{0} on room server.\nError: {1}", roomId, ex);
-                    DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidError(new ARDAppException(ex)));
-                }
-
-            });
+            _config.JoinRoomOrder(GetTurnConfigAync, () => JoinRoomWithClientAsync(roomId, isLoopback));
         }
 
         public void Disconnect()
@@ -409,6 +363,65 @@ namespace AppRTC
             }
         }
 
+        private async Task GetTurnConfigAync()
+        {
+            RTCIceServer[] iceServers = new RTCIceServer[0];
+            try
+            {
+                iceServers = await _turnClient.RequestServersAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error retrieving TURN servers: {0}", ex);
+            }
+
+            _iceServers.Clear();
+            _iceServers.AddRange(iceServers);
+            _isTurnComplete = true;
+            DispatchQueue.MainQueue.DispatchAsync(StartSignalingIfReady);
+        }
+
+        private async Task JoinRoomWithClientAsync(string roomId, bool isLoopback)
+        {
+            try
+            {
+                var response = await _roomServerClient.JoinRoomWithRoomIdAsync(roomId, isLoopback);
+
+                var joinError = ErrorForJoinResultType(response.Result);
+                if (joinError != null)
+                {
+                    Console.WriteLine("Failed to join room:{0} on room server.", roomId);
+                    DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidError(joinError));
+                    return;
+                }
+
+                var serverProps = response.ServerParams;
+
+                Console.WriteLine("Joined room:{0} on room server.", roomId);
+                _roomId = serverProps.room_id;
+                _cliendId = serverProps.client_id;
+                _isInitiator = serverProps.is_initiator;
+
+                var messages = response.GetMessages();
+
+                _messageQueue.AddRange(messages);
+
+                _webSocketUrl = serverProps.wss_url;
+                _webSocketRestUrl = serverProps.wss_post_url;
+
+                DispatchQueue.MainQueue.DispatchAsync(() =>
+                {
+                    RegisterWithColliderIfReady();
+                    StartSignalingIfReady();
+                });
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to join room:{0} on room server.\nError: {1}", roomId, ex);
+                DispatchQueue.MainQueue.DispatchAsync(() => Delegate?.DidError(new ARDAppException(ex)));
+            }
+        }
 
         private void RegisterWithColliderIfReady()
         {
@@ -439,7 +452,7 @@ namespace AppRTC
 
         private void StartSignalingIfReady()
         {
-            if (!_isTurnComplete || !HasJoinedRoomServerRoom)
+            if (!_isTurnComplete || !HasJoinedRoomServerRoom || State == ARDAppClientState.Connected)
             {
                 return;
             }
@@ -538,6 +551,7 @@ namespace AppRTC
 
             switch (msg.Type)
             {
+                
                 case ARDSignalingMessageType.Offer:
                 case ARDSignalingMessageType.Answer:
                     var sdpMessage = (ARDSessionDescriptionMessage)msg;

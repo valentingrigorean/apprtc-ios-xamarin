@@ -1,5 +1,5 @@
 ﻿//
-// ClientFactory.cs
+// SignalingMessageExtensions.cs
 //
 // Author:
 //       valentingrigorean <valentin.grigorean1@gmail.com>
@@ -24,25 +24,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Threading.Tasks;
+using AppRTC.H113.Models;
 
-namespace AppRTC.H113
+namespace AppRTC.H113.Extenstions
 {
-    public static class ClientFactory
+    public static class SignalingMessageExtensions
     {
-        public static ARDAppClient Create(IARDAppClientDelegate @delegate)
+        public static SignalingMessage GetSignalingMessage(this ARDSignalingMessage self, string from)
         {
-            var serverClient = new ServerClient("d5e5864a-b1db-4715-9c97-196c37126db0", "90375387");
-            return ARDAppClient.Create(new ARDAppClientConfig { JoinRoomOrder = JoinRoomOrder }, @delegate, new SignalingChannelFactory(serverClient), serverClient, serverClient);
+            switch (self.Type)
+            {
+                case ARDSignalingMessageType.Offer:
+                    return GetSignalingMessageWithType(self, "start", from);
+                case ARDSignalingMessageType.Candidate:
+                    return GetSignalingMessageWithType(self, "candidate", from);
+                case ARDSignalingMessageType.Bye:
+                    return new SignalingMessage
+                    {
+                        From = from,
+                        Type = "closed"
+                    };
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
-        private static void JoinRoomOrder(Func<Task> turnTask, Func<Task> clientTask)
-        {
-            Task.Run(async () =>
-            {
-                await clientTask();
-                await turnTask();
-            });
-        }
+        private static SignalingMessage GetSignalingMessageWithType(ARDSignalingMessage message, string type, string from) =>
+            new SignalingMessage { From = from, Type = type, Value = message.ToString() };
     }
 }

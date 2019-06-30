@@ -37,20 +37,19 @@ namespace AppRTC.H113
     {
         private const string BaseUrl = "https://h113.no";
 
-        private readonly object _lockObject = new object();
-
         private readonly RestClient _client = new RestClient(BaseUrl);
 
         private readonly SignalingMessageQueue _messageQueue;
+        private readonly string _from;
 
         private SignalingChannel _signalingChannel;
 
-        private TaskCompletionSource<int> _joimRoomTask;
         private TaskCompletionSource<RTCIceServer[]> _turnTask;
 
 
-        public ServerClient(string token)
+        public ServerClient(string token, string from)
         {
+            _from = from;
             _client.AddDefaultHeader("Authorization", string.Format("Bearer {0}", token));
             _messageQueue = new SignalingMessageQueue(() => SignalingChannel != null && SignalingChannel.State == ARDSignalingChannelState.Registered, ProcessSignalingMessage, "ServerClient");
         }
@@ -71,24 +70,14 @@ namespace AppRTC.H113
         public Task<ARDJoinResponse> JoinRoomWithRoomIdAsync(string roomId, bool isLoopback)
         {
             Console.WriteLine("Joining room:{0} on room server.", roomId);
-            lock (_lockObject)
-            {
-                if (_joimRoomTask == null)
-                    _joimRoomTask = new TaskCompletionSource<int>();
-                _turnTask = new TaskCompletionSource<RTCIceServer[]>();
-            }
-            if (_joimRoomTask.Task.Status != TaskStatus.RanToCompletion)
-                _joimRoomTask.SetResult(0);
-            lock (_lockObject)
-            {
-                _joimRoomTask = null;
-            }
+            _turnTask = new TaskCompletionSource<RTCIceServer[]>();
             return JoinRoomWithRoomIdInternalAsync(roomId, isLoopback);
         }
 
         public Task<bool> LeaveRoomWithRoomIdAsync(string roomId, string clientId)
         {
             //TODO: impl this
+            SignalingChannel.SendMessage(new ARDByeMessage());
             return Task.FromResult(true);
         }
 
@@ -106,19 +95,11 @@ namespace AppRTC.H113
 
         public async Task<RTCIceServer[]> RequestServersAsync()
         {
-            Task task;
-            lock (_lockObject)
-            {
-                if (_joimRoomTask == null)
-                    _joimRoomTask = new TaskCompletionSource<int>();
-                task = _joimRoomTask.Task;
-            }
-            await task;
+            if (_turnTask == null)
+                throw new InvalidOperationException("RequestServersAsync invalid call");
+
             var results = await _turnTask.Task;
-            lock (_lockObject)
-            {
-                _turnTask = null;
-            }
+            _turnTask = null;
             Console.WriteLine("TURN SERVER:{0}", results.Length);
             return results;
         }
@@ -135,23 +116,18 @@ namespace AppRTC.H113
 
         private async Task<ARDJoinResponse> JoinRoomWithRoomIdInternalAsync(string roomId, bool isLoopback)
         {
-
-
-            var request = new RestRequest("hallo ");
+            var request = new RestRequest("hallo");
 
             var response = await _client.ExecuteGetTaskAsync<Halllo>(request);
             if (!response.IsSuccessful)
             {
                 _turnTask.SetResult(new RTCIceServer[0]);
-                _joimRoomTask = null;
                 throw new ApplicationException("Error retrieving response.  Check inner details for more info.", response.ErrorException);
             }
 
             var hallo = response.Data;
             ParseIceServers(hallo);
-
-            var wsUrl = GetWSUrl(hallo.SignalingUrl);
-
+            
             TokenInfo.Current = new TokenInfo(hallo.Token);
 
             return new ARDJoinResponse
@@ -159,9 +135,10 @@ namespace AppRTC.H113
                 Result = ARDJoinResultType.Success,
                 ServerParams = new ServerParams
                 {
-                    wss_url = wsUrl,
+                    wss_url = hallo.SignalingUrl,
                     wss_post_url = hallo.SignalingUrl,
-                    client_id = hallo.Token,
+                    client_id = _from,
+                    room_id = _from,
                     is_initiator = true,
                     is_loopback = isLoopback
                 }
@@ -171,20 +148,6 @@ namespace AppRTC.H113
         private void ParseIceServers(Halllo halllo)
         {
             _turnTask.SetResult(halllo.Rtc.GetRTCIceServers());
-        }
-
-        private static string GetWSUrl(string url)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-                return "";
-            if (url.StartsWith("http", StringComparison.Ordinal))
-            {
-                var pos = url.IndexOf("://", StringComparison.Ordinal);
-                if (pos >= 0)
-                    return "wss://" + url.Substring(pos + 3);
-                return url;
-            }
-            return url;
         }
     }
 }

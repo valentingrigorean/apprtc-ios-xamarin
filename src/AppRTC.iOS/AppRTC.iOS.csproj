@@ -18,7 +18,7 @@
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
-        <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG</DefineConstants>
+        <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <ConsolePause>false</ConsolePause>
@@ -46,7 +46,7 @@
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <OutputPath>bin\iPhone\Debug</OutputPath>
-        <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;__H113__</DefineConstants>
+        <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <ConsolePause>false</ConsolePause>
@@ -67,6 +67,39 @@
         <ConsolePause>false</ConsolePause>
         <CodesignKey>iPhone Developer: grierosu alina (DHH46245KZ)</CodesignKey>
         <CodesignProvision>VS: WildCard Development</CodesignProvision>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugH113|iPhone' ">
+      <DebugSymbols>true</DebugSymbols>
+      <DebugType>full</DebugType>
+      <Optimize>false</Optimize>
+      <OutputPath>bin\iPhone\DebugH113</OutputPath>
+      <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;__H113__</DefineConstants>
+      <ErrorReport>prompt</ErrorReport>
+      <WarningLevel>4</WarningLevel>
+      <ConsolePause>false</ConsolePause>
+      <MtouchArch>ARM64</MtouchArch>
+      <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+      <CodesignKey>iPhone Developer: grierosu alina (DHH46245KZ)</CodesignKey>
+      <MtouchDebug>true</MtouchDebug>
+      <CodesignProvision>VS: WildCard Development</CodesignProvision>
+      <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugH113|iPhoneSimulator' ">
+      <DebugSymbols>true</DebugSymbols>
+      <DebugType>full</DebugType>
+      <Optimize>false</Optimize>
+      <OutputPath>bin\iPhoneSimulator\DebugH113</OutputPath>
+      <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;__H113__</DefineConstants>
+      <ErrorReport>prompt</ErrorReport>
+      <WarningLevel>4</WarningLevel>
+      <ConsolePause>false</ConsolePause>
+      <MtouchArch>x86_64</MtouchArch>
+      <MtouchLink>None</MtouchLink>
+      <MtouchDebug>true</MtouchDebug>
+      <CodesignProvision>VS: WildCard Development</CodesignProvision>
+      <CodesignKey>iPhone Developer: grierosu alina (DHH46245KZ)</CodesignKey>
+      <MtouchExtraArgs>-v </MtouchExtraArgs>
+      <DeviceSpecificBuild>true</DeviceSpecificBuild>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="System" />

@@ -67,6 +67,7 @@ namespace AppRTC.iOS
             base.LoadView();
             _videoCallView = new ARDVideoCallView(CGRect.Empty);
             _videoCallView.Delegate = this;
+            _videoCallView.StatusLabel.Text = StatusTextForState(RTCIceConnectionState.New);
             View = _videoCallView;
 
 

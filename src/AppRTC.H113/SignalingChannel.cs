@@ -27,7 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using AppRTC.Extensions;
+using AppRTC.H113.Extenstions;
 using Foundation;
+using Newtonsoft.Json;
 using Square.SocketRocket;
 
 namespace AppRTC.H113
@@ -45,32 +47,28 @@ namespace AppRTC.H113
             Contract.Requires(!string.IsNullOrEmpty(RoomId));
             Contract.Requires(State == ARDSignalingChannelState.Registered);
 
-            var data = message.JsonData;
-            var payload = data != null ? new NSString(data, NSStringEncoding.UTF8) : new NSString("{}");
-            var messageDict = new NSDictionary(
-                         "cmd", "send",
-                         "msg", payload);
+            if (message.JsonData == null)
+                return;
 
-            var messageJSON = NSJsonSerialization.Serialize(
-                messageDict, NSJsonWritingOptions.PrettyPrinted, out NSError err);
 
-            var messageString = new NSString(
-                messageJSON, NSStringEncoding.UTF8);
+            var signalingMessage = message.GetSignalingMessage(ClientId);
 
-            SendMessage(messageString);
+            var json = JsonConvert.SerializeObject(signalingMessage, Formatting.Indented);
+
+            SendMessage(json);
         }
 
         protected override WebSocket CreateSocket(string url)
         {
-            var request = new NSMutableUrlRequest(new NSUrl(url))
-            {
-                Headers = new Dictionary<string, string>
-                {
-                    ["Origin"] = "https://h113.no",
-                    ["Sec-WebSocket-Protocol"] = TokenInfo.Current.Token
-                }.ToNative()
-            };
-            return new WebSocket(request);
+            //var request = new NSMutableUrlRequest(new NSUrl(url))
+            //{
+            //    Headers = new Dictionary<string, string>
+            //    {
+            //        ["Origin"] = "https://h113.no",
+            //        ["Sec-WebSocket-Protocol"] = TokenInfo.Current.Token
+            //    }.ToNative()
+            //};
+            return new WebSocket(new NSUrl(url), new NSObject[] { new NSString(TokenInfo.Current.Token) });
         }
 
         protected override void OnReceivedMessage(string message)

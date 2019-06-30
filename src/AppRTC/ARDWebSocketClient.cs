@@ -35,7 +35,7 @@ namespace AppRTC
 {
     public class ARDWebSocketClient : ARDSignalingChannel, IDisposable
     {
-        private WebSocket _socket;
+        protected WebSocket Socket { get; private set; }
 
         protected string WebRestFormated => $"{RestUrl}/{RoomId}/{ClientId}";
 
@@ -55,10 +55,12 @@ namespace AppRTC
             if (State == ARDSignalingChannelState.Closed ||
                State == ARDSignalingChannelState.Error)
                 return;
-            UnWire(_socket);
-            _socket.Close();
-            _socket.Dispose();
-            _socket = null;
+            UnWire(Socket);
+            Socket.Close();
+            Socket.Dispose();
+            Socket = null;
+            if (string.IsNullOrWhiteSpace(RestUrl))
+                return;
             Debug.WriteLine($"C->WSS DELETE rid:{RoomId} cid:{ClientId}");
             var url = new NSUrl(WebRestFormated);
             var request = new NSMutableUrlRequest(url)
@@ -116,7 +118,7 @@ namespace AppRTC
         protected void SendMessage(NSString message)
         {
             Debug.WriteLine($"C->WSS:{message}");
-            _socket.Send(message);
+            Socket.Send(message);
         }
 
         protected virtual WebSocket CreateSocket(string url)
@@ -142,7 +144,7 @@ namespace AppRTC
             Debug.WriteLine($"Registering on WSS for rid:{RoomId} cid:{ClientId}");
             //// Registration can fail if server rejects it. For example, if the room is
             //// full.
-            _socket.Send(new NSString(message, NSStringEncoding.UTF8));
+            Socket.Send(new NSString(message, NSStringEncoding.UTF8));
             State = ARDSignalingChannelState.Registered;
         }
 
@@ -216,10 +218,10 @@ namespace AppRTC
 
         private void Initialize()
         {
-            _socket = CreateSocket(Url);
-            Wire(_socket);
+            Socket = CreateSocket(Url);
+            Wire(Socket);
             Console.WriteLine("Opening WebSocket.");
-            _socket.Open();
+            Socket.Open();
         }
 
         private class SocketResponse
