@@ -30,21 +30,40 @@ namespace AppRTC.iOS
 {
     public class ARDFileCaptureController
     {
-        private readonly RTCFileVideoCapturer _fileCapturer;
+        private readonly string[] Files =
+        {
+            "foreman.mp4",
+            "SampleVideo_1280x720_10mb.mp4"
+        };
 
+        private readonly RTCFileVideoCapturer _fileCapturer;
+        private bool _hasStarted;
+        private int _currentFile;
 
         public ARDFileCaptureController(RTCFileVideoCapturer fileCapturer)
         {
             _fileCapturer = fileCapturer;
         }
 
+        public void Toggle()
+        {
+            _currentFile = _currentFile == 0 ? 1 : 0;
+            StopCapture();
+            StartCapture();
+        }
+
         public void StartCapture()
         {
-            _fileCapturer.StartCapturingFromFileNamed("foreman.mp4", (error) => Console.WriteLine(error));
+            if (_hasStarted)
+                return;
+
+            _hasStarted = true;
+            _fileCapturer.StartCapturingFromFileNamed(Files[_currentFile], (error) => Console.WriteLine(error));
         }
 
         public void StopCapture()
         {
+            _hasStarted = false;
             _fileCapturer.StopCapture();
         }
     }

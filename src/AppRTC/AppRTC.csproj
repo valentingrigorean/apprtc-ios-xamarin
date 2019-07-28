@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;__H113__</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -48,13 +48,13 @@
       <HintPath>..\..\packages\Square.SocketRocket.0.5.1\lib\Xamarin.iOS\Square.SocketRocket.dll</HintPath>
     </Reference>
     <Reference Include="Open.Diagnostics">
-      <HintPath>..\..\packages\Open.Diagnostics.1.3.0\lib\netstandard2.0\Open.Diagnostics.dll</HintPath>
+      <HintPath>..\..\packages\Open.Diagnostics.1.4.0\lib\netstandard2.0\Open.Diagnostics.dll</HintPath>
     </Reference>
     <Reference Include="Open.Disposable">
-      <HintPath>..\..\packages\Open.Disposable.2.0.0\lib\netstandard2.0\Open.Disposable.dll</HintPath>
+      <HintPath>..\..\packages\Open.Disposable.2.3.0\lib\netstandard2.0\Open.Disposable.dll</HintPath>
     </Reference>
     <Reference Include="Open.Text">
-      <HintPath>..\..\packages\Open.Text.2.0.4\lib\netstandard2.0\Open.Text.dll</HintPath>
+      <HintPath>..\..\packages\Open.Text.2.1.0\lib\netstandard2.0\Open.Text.dll</HintPath>
     </Reference>
     <Reference Include="Open.Threading.Tasks">
       <HintPath>..\..\packages\Open.Threading.Tasks.1.1.3\lib\netstandard2.0\Open.Threading.Tasks.dll</HintPath>
@@ -66,25 +66,25 @@
       <HintPath>..\..\packages\System.Threading.Channels.4.5.0\lib\netstandard2.0\System.Threading.Channels.dll</HintPath>
     </Reference>
     <Reference Include="Open.Disposable.ObjectPools">
-      <HintPath>..\..\packages\Open.Disposable.ObjectPools.2.1.3\lib\netstandard2.0\Open.Disposable.ObjectPools.dll</HintPath>
+      <HintPath>..\..\packages\Open.Disposable.ObjectPools.2.3.3\lib\netstandard2.0\Open.Disposable.ObjectPools.dll</HintPath>
     </Reference>
     <Reference Include="Open.Threading.ReadWrite">
-      <HintPath>..\..\packages\Open.Threading.ReadWrite.1.1.2\lib\netstandard2.0\Open.Threading.ReadWrite.dll</HintPath>
+      <HintPath>..\..\packages\Open.Threading.ReadWrite.1.3.2\lib\netstandard2.0\Open.Threading.ReadWrite.dll</HintPath>
     </Reference>
     <Reference Include="Open.Threading">
-      <HintPath>..\..\packages\Open.Threading.1.4.2\lib\netstandard2.0\Open.Threading.dll</HintPath>
+      <HintPath>..\..\packages\Open.Threading.1.5.3\lib\netstandard2.0\Open.Threading.dll</HintPath>
     </Reference>
     <Reference Include="Open.Collections">
-      <HintPath>..\..\packages\Open.Collections.2.4.6\lib\netstandard2.0\Open.Collections.dll</HintPath>
+      <HintPath>..\..\packages\Open.Collections.2.7.0\lib\netstandard2.0\Open.Collections.dll</HintPath>
     </Reference>
     <Reference Include="System.Buffers">
-      <HintPath>..\..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+      <HintPath>..\..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory">
-      <HintPath>..\..\packages\System.Memory.4.5.2\lib\netstandard2.0\System.Memory.dll</HintPath>
+      <HintPath>..\..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="Open.MemoryExtensions">
-      <HintPath>..\..\packages\Open.MemoryExtensions.2.0.1\lib\netstandard2.0\Open.MemoryExtensions.dll</HintPath>
+      <HintPath>..\..\packages\Open.MemoryExtensions.2.1.0\lib\netstandard2.0\Open.MemoryExtensions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -18,7 +18,7 @@
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
-        <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;</DefineConstants>
+        <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;__H113__</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <ConsolePause>false</ConsolePause>
@@ -114,6 +114,9 @@
       <PackageReference Include="Plugin.Permissions">
         <Version>3.0.0.12</Version>
       </PackageReference>
+      <PackageReference Include="Newtonsoft.Json">
+        <Version>12.0.2</Version>
+      </PackageReference>
     </ItemGroup>
     <ItemGroup>
         <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
@@ -182,9 +185,9 @@
         <Compile Include="ARDStatsView.cs" />
         <Compile Include="Extenstions\UIImageExtension.cs" />
         <Compile Include="Extenstions\UIVIewControllerExtensions.cs" />
-        <Compile Include="ARDVideoCallViewController.ARDAppClientDelegate.cs" />
         <Compile Include="ARDVideoCallViewController.ARDVideoCallViewDelegate.cs" />
         <Compile Include="ARDFileCaptureController.cs" />
+        <Compile Include="ARDVideoCallViewController.ARDAppClientDelegate.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\AppRTC\AppRTC.csproj">
@@ -225,6 +228,7 @@
       <BundleResource Include="Resources\Icon-120.png" />
       <BundleResource Include="Resources\Icon-180.png" />
       <BundleResource Include="Resources\Icon.png" />
+      <BundleResource Include="Resources\SampleVideo_1280x720_10mb.mp4" />
     </ItemGroup>
     <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

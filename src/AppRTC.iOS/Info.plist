@@ -52,6 +52,8 @@
 	</array>
 	<key>CFBundleName</key>
 	<string>AppRTC.iOS</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Fill in a reason why your app needs access to location.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access needed for video calling</string>
 	<key>NSMicrophoneUsageDescription</key>

@@ -43,6 +43,7 @@
     <Compile Include="RTCCVPixelBuffer.cs" />
     <Compile Include="RCTLog.cs" />
     <Compile Include="RTCFieldTrials.cs" />
+    <Compile Include="RTCDataChannel.cs" />
   </ItemGroup>
   <ItemGroup>
     <NativeReference Include="WebRTC.framework">

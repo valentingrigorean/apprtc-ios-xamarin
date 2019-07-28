@@ -24,10 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using AppRTC.Extensions;
 using AppRTC.H113.Extenstions;
+using AppRTC.H113.Models;
 using Foundation;
 using Newtonsoft.Json;
 using Square.SocketRocket;
@@ -41,6 +41,10 @@ namespace AppRTC.H113
         }
 
         public event EventHandler OnSocketOpen;
+
+        public override void Disconnect()
+        {
+        }
 
         public override void SendMessage(ARDSignalingMessage message)
         {
@@ -56,25 +60,35 @@ namespace AppRTC.H113
             var json = JsonConvert.SerializeObject(signalingMessage, Formatting.Indented);
 
             SendMessage(json);
+
+            if (message.Type == ARDSignalingMessageType.Bye)
+                base.Disconnect();
         }
+
+
 
         protected override WebSocket CreateSocket(string url)
         {
-            //var request = new NSMutableUrlRequest(new NSUrl(url))
-            //{
-            //    Headers = new Dictionary<string, string>
-            //    {
-            //        ["Origin"] = "https://h113.no",
-            //        ["Sec-WebSocket-Protocol"] = TokenInfo.Current.Token
-            //    }.ToNative()
-            //};
             return new WebSocket(new NSUrl(url), new NSObject[] { new NSString(TokenInfo.Current.Token) });
         }
 
         protected override void OnReceivedMessage(string message)
         {
-            // base.OnReceivedMessage(message);
-            Console.WriteLine(message);
+            SignalingMessage signalingMessage;
+            try
+            {
+                signalingMessage = JsonConvert.DeserializeObject<SignalingMessage>(message);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Invalid json error: {ex.Message} message:{message}");
+                return;
+            }
+
+            var payload = signalingMessage.GetARDSignalingMessage();
+            Debug.WriteLine($"WSS->C: {payload}");
+
+            Delegate?.DidReceiveMessage(this, payload);
         }
 
         protected override void RegisterWithCollider()

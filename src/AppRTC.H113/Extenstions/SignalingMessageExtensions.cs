@@ -24,7 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using AppRTC.H113.Models;
+using Newtonsoft.Json;
+using WebRTCBinding;
 
 namespace AppRTC.H113.Extenstions
 {
@@ -35,9 +38,28 @@ namespace AppRTC.H113.Extenstions
             switch (self.Type)
             {
                 case ARDSignalingMessageType.Offer:
-                    return GetSignalingMessageWithType(self, "start", from);
+                    return new SignalingMessage
+                    {
+                        From = from,
+                        Type = "start",
+                        Value = new
+                        {
+                            type = "offer",
+                            sdp = ((ARDSessionDescriptionMessage)self).Description.Sdp
+                        }
+                    };
                 case ARDSignalingMessageType.Candidate:
-                    return GetSignalingMessageWithType(self, "candidate", from);
+                    return new SignalingMessage
+                    {
+                        From = from,
+                        Type = "candidate",
+                        Value = new
+                        {
+                            candidate = ((ARDICECandidateMessage)self).Candidate.Sdp,
+                            sdpMid = ((ARDICECandidateMessage)self).Candidate.SdpMid,
+                            sdpMLineIndex = ((ARDICECandidateMessage)self).Candidate.SdpMLineIndex
+                        }
+                    };
                 case ARDSignalingMessageType.Bye:
                     return new SignalingMessage
                     {
@@ -49,7 +71,23 @@ namespace AppRTC.H113.Extenstions
             }
         }
 
-        private static SignalingMessage GetSignalingMessageWithType(ARDSignalingMessage message, string type, string from) =>
-            new SignalingMessage { From = from, Type = type, Value = message.ToString() };
+        public static ARDSignalingMessage GetARDSignalingMessage(this SignalingMessage self)
+        {
+            var values = JsonConvert.DeserializeObject<IDictionary<string, string>>(self.Value.ToString());
+            switch (self.Type)
+            {
+                case "answer":
+                    return new ARDSessionDescriptionMessage(new RTCSessionDescription(RTCSdpType.Answer, values["sdp"]));
+                case "candidate":
+                    return new ARDICECandidateMessage(new RTCIceCandidate(
+                        values["candidate"],
+                        int.Parse(values["sdpMLineIndex"]),
+                        values["sdpMid"]));
+                case "closed":
+                    return new ARDByeMessage();
+                default:
+                    throw new NotImplementedException();
+            }
+        }
     }
 }
