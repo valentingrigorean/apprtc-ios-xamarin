@@ -29,7 +29,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Foundation;
 using Newtonsoft.Json;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC
 {

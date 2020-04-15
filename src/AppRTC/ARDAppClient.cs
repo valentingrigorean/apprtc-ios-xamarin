@@ -33,7 +33,7 @@ using AppRTC.Extensions;
 using CoreFoundation;
 using Foundation;
 using UIKit;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC
 {
@@ -305,7 +305,7 @@ namespace AppRTC
             if (_config.EnableTracing)
             {
                 var filePath = DocumentsFilePathForFileName("webrtc-trace.txt");
-                RTCTracking.RTCStartInternalCapture(filePath);
+                RTCTracing.RTCStartInternalCapture(filePath);
             }
 
             _config.JoinRoomOrder(GetTurnConfigAync, () => JoinRoomWithClientAsync(roomId, isLoopback));
@@ -359,7 +359,7 @@ namespace AppRTC
 
             if (_config.EnableTracing)
             {
-                RTCTracking.RTCStopInternalCapture();
+                RTCTracing.RTCStopInternalCapture();
             }
         }
 

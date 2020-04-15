@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 
 using System;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC
 {

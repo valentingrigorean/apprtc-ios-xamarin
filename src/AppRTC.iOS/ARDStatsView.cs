@@ -26,7 +26,7 @@
 using System;
 using UIKit;
 using CoreGraphics;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC.iOS
 {

@@ -29,7 +29,7 @@ using AVFoundation;
 using CoreGraphics;
 using Foundation;
 using UIKit;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC.iOS
 {

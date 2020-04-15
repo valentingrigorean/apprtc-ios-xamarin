@@ -26,7 +26,7 @@
 using System;
 using AVFoundation;
 using Foundation;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC.iOS
 {

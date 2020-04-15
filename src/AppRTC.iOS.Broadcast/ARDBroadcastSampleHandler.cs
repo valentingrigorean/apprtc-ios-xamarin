@@ -29,7 +29,7 @@ using CoreFoundation;
 using CoreMedia;
 using Foundation;
 using ReplayKit;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC.iOS.Broadcast
 {

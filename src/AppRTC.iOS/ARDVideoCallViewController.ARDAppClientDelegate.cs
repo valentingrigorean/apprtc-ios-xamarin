@@ -24,70 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Threading.Tasks;
 using AppRTC.iOS.Extenstions;
-using CoreFoundation;
 using CoreGraphics;
-using Foundation;
-using Newtonsoft.Json;
 using UIKit;
-using WebRTCBinding;
-using Xamarin.Essentials;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC.iOS
 {
-#if __H113__
-#pragma warning disable RECS0165  // Asynchronous methods should return a Task instead of void
-    public class DataChannelDelegate : RTCDataChannelDelegate
-    {
-
-
-        public ARDFileCaptureController FileCaptureController { get; set; }
-        public ARDCaptureController CaptureController { get; set; }
-
-        public override void DataChannelDidChangeState(RTCDataChannel dataChannel)
-        {
-            Console.WriteLine("DataChannelDidChangeState:{0}", dataChannel.ReadyState);
-        }
-
-        public override void DidReceiveMessageWithBuffer(RTCDataChannel dataChannel, RTCDataBuffer buffer)
-        {
-            var command = NSString.FromData(buffer.Data, NSStringEncoding.UTF8);
-
-            switch (command)
-            {
-                case "gps":
-                    DispatchQueue.MainQueue.DispatchAsync(async () => await GetGpsLocationAsync(dataChannel));
-                    break;
-                case "flip cam":
-                    CaptureController?.SwitchCamera();
-                    FileCaptureController?.Toggle();
-                    break;
-            }
-        }
-
-        private async Task GetGpsLocationAsync(RTCDataChannel channel)
-        {
-            try
-            {
-                var location = await Geolocation.GetLocationAsync();
-                var json = JsonConvert.SerializeObject(new
-                {
-                    type = "gps",
-                    coords = new[] { location.Latitude, location.Longitude }
-                });
-                channel.SendData(json);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Failed to send location:{0}", ex);
-            }
-
-        }
-    }
-#pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
-
-#endif
 
     public partial class ARDVideoCallViewController : IARDAppClientDelegate
     {
@@ -95,35 +38,16 @@ namespace AppRTC.iOS
         private ARDFileCaptureController _fileCaptureController;
         private RTCVideoTrack _remoteVideoTrack;
         private RTCVideoTrack _localVideoTrack;
-#if __H113__
-        private RTCDataChannel _sendChannel;
-#endif
+
 
         public void DidCreatePeerConnection(RTCPeerConnection peerConnection)
         {
-#if __H113__
-            _sendChannel = peerConnection.DataChannelForLabel("sendChannel", new RTCDataChannelConfiguration());
-            _sendChannel.Delegate = new DataChannelDelegate
-            {
-                CaptureController = _captureController,
-                FileCaptureController = _fileCaptureController
-            };
-#endif
+
         }
 
         public void DidOpenDataChannel(RTCDataChannel dataChannel)
         {
-#if __H113__
-            if (dataChannel.Label == "sendChannel")
-            {
-                _sendChannel = dataChannel;
-                _sendChannel.Delegate = new DataChannelDelegate
-                {
-                    CaptureController = _captureController,
-                    FileCaptureController = _fileCaptureController
-                };
-            }
-#endif
+
         }
 
         public void DidChangeConnectionState(RTCIceConnectionState state)
@@ -156,12 +80,6 @@ namespace AppRTC.iOS
             _captureController = new ARDCaptureController(localCapturer, new ARDSettingsModel());
             _captureController.StartCapture();
 
-#if __H113__
-            if(_sendChannel != null && _sendChannel.Delegate is DataChannelDelegate channelDelegate)
-            {
-                channelDelegate.CaptureController = _captureController; 
-            }
-#endif
         }
 
         public void DidCreateLocalExternalSampleCapturer(ARDExternalSampleCapturer externalSampleCapturer)
@@ -174,12 +92,6 @@ namespace AppRTC.iOS
             {
                 _fileCaptureController = new ARDFileCaptureController(fileCapturer);
                 _fileCaptureController.StartCapture();
-#if __H113__
-                if (_sendChannel != null && _sendChannel.Delegate is DataChannelDelegate channelDelegate)
-                {
-                    channelDelegate.FileCaptureController = _fileCaptureController;
-                }
-#endif
             }
         }
 

@@ -26,8 +26,7 @@
 using System;
 using System.Text;
 using AppRTC.Extensions;
-using Foundation;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC
 {

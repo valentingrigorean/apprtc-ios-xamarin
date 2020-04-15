@@ -27,11 +27,7 @@ using System;
 using CoreGraphics;
 using Foundation;
 using UIKit;
-using WebRTCBinding;
-
-#if __H113__
-using AppRTC.H113;
-#endif
+using WebRTC.iOS.Binding;
 
 namespace AppRTC.iOS
 {
@@ -51,11 +47,8 @@ namespace AppRTC.iOS
         {
             Delegate = @delegate;
             var settings = new ARDSettingsModel();
-#if __H113__
-            _client = ClientFactory.Create(this);
-#else
+
             _client = ARDAppClient.Create(@delegate: this);
-#endif
             _client.ConnectToRoomWithId(room, settings, isLoopback);
         }
 

@@ -26,7 +26,7 @@
 using System;
 using CoreFoundation;
 using Foundation;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC
 {
@@ -119,21 +119,8 @@ namespace AppRTC
         {
             DispatchForPeerConnectionAsync(() =>
             {
-#if __H113__
-                if (_messageQueue.HasReceivedSdp)
-                {
-                    var message = new ARDICECandidateMessage(candidate);
-                    SendSignalingMessage(message);
-                }
-                else
-                {
-                    var message = new ARDSessionDescriptionMessage(peerConnection.LocalDescription);
-                    SendSignalingMessage(message);
-                }
-#else
                 var message = new ARDICECandidateMessage(candidate);
                 SendSignalingMessage(message);
-#endif
             });
         }
 

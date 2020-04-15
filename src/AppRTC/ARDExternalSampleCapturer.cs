@@ -26,7 +26,7 @@
 using System;
 using CoreMedia;
 using CoreVideo;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC
 {  

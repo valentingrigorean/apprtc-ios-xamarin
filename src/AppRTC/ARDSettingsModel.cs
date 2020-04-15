@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreMedia;
 using Foundation;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC
 {

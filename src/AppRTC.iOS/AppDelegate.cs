@@ -1,6 +1,7 @@
-﻿using Foundation;
+﻿using System.Collections.Generic;
+using Foundation;
 using UIKit;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC.iOS
 {
@@ -24,9 +25,9 @@ namespace AppRTC.iOS
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
 
-            RTCFieldTrials.InitFieldTrialDictionary(new NSDictionary<NSString, NSString>());
+            RTCFieldTrials.InitFieldTrialDictionary(new Dictionary<string, string>());
             RTCSSLAdapter.RTCInitializeSSL();
-            RTCTracking.RTCSetupInternalTracer();
+            //RTCTracing.RTCSetupInternalTracer();
 
 //#if DEBUG
 //            RTCLog.SetMinDebugLogLevel(RTCLoggingSeverity.Error);
@@ -71,7 +72,7 @@ namespace AppRTC.iOS
         public override void WillTerminate(UIApplication application)
         {
             // Called when the application is about to terminate. Save data, if needed. See also DidEnterBackground.
-            RTCTracking.RTCShutdownInternalTracer();
+            RTCTracing.RTCShutdownInternalTracer();
             RTCSSLAdapter.RTCCleanupSSL();
         }
     }

@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using WebRTCBinding;
+using WebRTC.iOS.Binding;
 
 namespace AppRTC.Extensions
 {
